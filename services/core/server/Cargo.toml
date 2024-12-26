@@ -1,0 +1,156 @@
+[workspace]
+resolver = "2"
+members = ["crates/*"]
+
+[profile.dev]
+debug = true
+lto = "off"
+opt-level = 0
+
+[profile.dev.package."*"]
+opt-level = 3
+
+[profile.release]
+codegen-units = 1
+debug = true
+lto = "fat"
+opt-level = 3
+panic = "abort"
+
+[workspace.dependencies]
+auth = { path = "crates/auth" }
+config = { path = "crates/config" }
+crypto = { path = "crates/crypto" }
+errors = { path = "crates/errors" }
+macros = { path = "crates/macros" }
+models = { path = "crates/models" }
+sample = { path = "crates/sample" }
+
+axum-test = "17.3"
+fake = { version = "4.3", features = ["derive", "chrono", "uuid"] }
+pretty_assertions = "1.4"
+proptest = "1.5"
+rstest = "0.25"
+serial_test = "3.1"
+
+anyhow = "1.0"
+argon2 = "0.5"
+axum = { version = "0.8", features = ["macros", "ws"] }
+axum-extra = { version = "0.10", features = ["typed-header"] }
+axum-prometheus = "0.8"
+base64 = "0.22"
+bitflags = "2.6"
+chrono = { version = "0.4", features = ["serde"] }
+criterion = { version = "0.6", features = ["html_reports"] }
+darling = "0.21"
+derive_more = { version = "2.0", features = ["full"] }
+diesel = { version = "2.0", features = [
+    "chrono",
+    "postgres",
+    "r2d2",
+    "uuid",
+    "serde_json",
+    "network-address",
+] }
+diesel_migrations = { version = "2.2", features = ["postgres"] }
+dotenvy = "0.15"
+http = "1.0"
+http-body-util = "0.1"
+ipnetwork = "0.20"
+jsonwebtoken = "9.3"
+lazy_static = "1.5"
+metrics = "0.24"
+openssl-probe = "0.1"
+proc-macro-crate = "3.2.0"
+proc-macro2 = "1.0.89"
+pyroscope = "0.5"
+pyroscope_pprofrs = "0.2"
+quote = "1.0.37"
+rand = "0.9"
+rand_core = { version = "0.5", features = ["std", "getrandom"] }
+rayon = "1.10"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+strum = { version = "0.27", features = ["derive"] }
+syn = "2.0.86"
+thiserror = "2.0"
+tokio = { version = "1.35", features = ["full"] }
+tokio-cron-scheduler = "0.14"
+tower = { version = "0.5", features = ["full"] }
+tower-http = { version = "0.6", features = ["full"] }
+tracing = "0.1"
+tracing-appender = "0.2"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+ts-rs = { version = "11.0", features = [
+    "format",
+    "uuid-impl",
+    "heapless-impl",
+    "chrono-impl",
+] }
+utoipa = { version = "5.1", features = ["axum_extras"] }
+utoipa-swagger-ui = { version = "9.0", features = ["axum"] }
+utoipauto = "0.2"
+uuid = { version = "1.7", features = ["serde", "v4"] }
+
+[package]
+name = "server"
+version = "0.0.0"
+edition = "2024"
+
+[lib]
+doctest = false
+
+[[bin]]
+name = "server"
+test = false
+
+[[bench]]
+name = "bench"
+path = "benches/bench.rs"
+harness = false
+
+[dev-dependencies]
+axum-test.workspace = true
+criterion.workspace = true
+fake.workspace = true
+pretty_assertions.workspace = true
+proptest.workspace = true
+rstest.workspace = true
+serial_test.workspace = true
+
+[dependencies]
+auth.workspace = true
+config.workspace = true
+crypto.workspace = true
+errors.workspace = true
+macros.workspace = true
+models.workspace = true
+sample.workspace = true
+
+bitflags.workspace = true
+axum.workspace = true
+axum-extra.workspace = true
+axum-prometheus.workspace = true
+chrono.workspace = true
+http.workspace = true
+http-body-util.workspace = true
+ipnetwork.workspace = true
+metrics.workspace = true
+openssl-probe.workspace = true
+pyroscope.workspace = true
+pyroscope_pprofrs.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+strum.workspace = true
+tokio.workspace = true
+tokio-cron-scheduler.workspace = true
+tower.workspace = true
+tower-http.workspace = true
+tracing.workspace = true
+tracing-appender.workspace = true
+tracing-subscriber.workspace = true
+ts-rs.workspace = true
+utoipa.workspace = true
+utoipa-swagger-ui.workspace = true
+utoipauto.workspace = true
+uuid.workspace = true

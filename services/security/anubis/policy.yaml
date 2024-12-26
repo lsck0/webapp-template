@@ -1,0 +1,27 @@
+bots:
+  - name: cloudflare-workers
+    headers_regex:
+      CF-Worker: .*
+    action: DENY
+  - name: well-known
+    path_regex: ^/.well-known/.*$
+    action: ALLOW
+  - name: favicon
+    path_regex: ^/favicon.ico$
+    action: ALLOW
+  - name: robots-txt
+    path_regex: ^/robots.txt$
+    action: ALLOW
+  # - name: allow-api-requests
+  #   action: ALLOW
+  #   expression:
+  #     all:
+  #       - '"Accept" in headers'
+  #       - 'headers["Accept"] == "application/json"'
+  #       - 'path.startsWith("/api/")'
+  - name: all-other
+    user_agent_regex: Mozilla
+    action: CHALLENGE
+    challenge:
+      algorithm: fast
+      difficulty: 4

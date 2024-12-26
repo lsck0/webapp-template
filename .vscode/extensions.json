@@ -1,0 +1,18 @@
+{
+    "recommendations": [
+        "bbenoist.Nix",
+        "bradlc.vscode-tailwindcss",
+        "bungcip.better-toml",
+        "christian-kohler.path-intellisense",
+        "dbaeumer.vscode-eslint",
+        "ecmel.vscode-html-css",
+        "esbenp.prettier-vscode",
+        "hashicorp.terraform",
+        "ms-azuretools.vscode-docker",
+        "redhat.vscode-yaml",
+        "rust-lang.rust-analyzer",
+        "usernamehw.errorlens",
+        "vadimcn.vscode-lldb",
+        "yoavbls.pretty-ts-errors"
+    ]
+}

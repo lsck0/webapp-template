@@ -1,0 +1,27 @@
+[package]
+name = "models"
+version = "0.0.0"
+edition = "2024"
+
+[lib]
+doctest = false
+
+[dev-dependencies]
+serial_test.workspace = true
+
+[dependencies]
+config.workspace = true
+crypto.workspace = true
+errors.workspace = true
+macros.workspace = true
+
+chrono.workspace = true
+bitflags.workspace = true
+diesel.workspace = true
+diesel_migrations.workspace = true
+ipnetwork.workspace = true
+serde.workspace = true
+strum.workspace = true
+ts-rs.workspace = true
+utoipa.workspace = true
+uuid.workspace = true

@@ -1,0 +1,40 @@
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    uid: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+
+  - name: Loki
+    type: loki
+    access: proxy
+    url: http://loki/
+    jsonData:
+      timeout: 60
+      maxLines: 10000
+
+  - name: Pyroscope
+    type: grafana-pyroscope-datasource
+    access: proxy
+    url: http://pyroscope:4040
+    jsonData:
+      serverAddress: http://pyroscope:4040
+      maxLines: 1000
+
+  - name: Postgres
+    type: postgres
+    access: proxy
+    url: postgres://root:1UdEQQTMBGCCWxvY2FsaG9zdIcEfwAAATAdBgNVHQ4EFgQUgGAHp2OojO06lrYu@postgres:5432/root
+    database: root
+    user: root
+    password: 1UdEQQTMBGCCWxvY2FsaG9zdIcEfwAAATAdBgNVHQ4EFgQUgGAHp2OojO06lrYu
+    jsonData:
+      sslmode: disable
+      maxOpenConns: 1
+      maxIdleConns: 1
+      connMaxLifetime: 14400
+      readTimeout: 30
+      writeTimeout: 30
