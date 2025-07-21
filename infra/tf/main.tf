@@ -70,7 +70,7 @@ resource "aws_elastic_beanstalk_environment" "webapp-template-env" {
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "RootVolumeSize"
-    value     = "16" # GiB
+    value     = "32" # GiB
   }
 
   # EC2 Instance Role
@@ -127,6 +127,21 @@ resource "aws_vpc_security_group_ingress_rule" "webapp-template-sg-http-inbound"
   cidr_ipv4   = "0.0.0.0/0"
   from_port   = 80
   to_port     = 80
+
+  tags = {
+    Project = "webapp-template"
+    Owner   = "Luca Sandrock"
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "webapp-template-sg-http-inbound" {
+  security_group_id = aws_security_group.webapp-template-sg.id
+  description       = "Allow HTTPS inbound traffic to the main application."
+
+  ip_protocol = "tcp"
+  cidr_ipv4   = "0.0.0.0/0"
+  from_port   = 443
+  to_port     = 443
 
   tags = {
     Project = "webapp-template"
