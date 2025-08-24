@@ -26,14 +26,14 @@ pub fn session_router() -> Router {
     )
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, ToSchema, TS)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS, ToSchema)]
 #[serde(untagged)]
 #[ts(export)]
 pub enum GetSessionRequest {
     Default { tag: GetSessionTag },
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, ToSchema, TS)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS, ToSchema)]
 #[ts(export)]
 pub enum GetSessionTag {
     All,
@@ -85,7 +85,7 @@ async fn get_session_handler(
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, ToSchema, TS)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS, ToSchema)]
 #[serde(untagged)]
 #[ts(export)]
 pub enum CloseSessionRequest {
@@ -142,7 +142,7 @@ async fn close_session_handler(
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, ToSchema, TS)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS, ToSchema)]
 #[serde(untagged)]
 #[ts(export)]
 pub enum DeleteSessionRequest {

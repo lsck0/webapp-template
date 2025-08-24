@@ -18,7 +18,7 @@ pub struct NewUserModel {
     pub password_hash: String,
 }
 
-#[derive(Debug, Clone, Queryable, Selectable, AsChangeset)]
+#[derive(Debug, Clone, AsChangeset, Queryable, Selectable)]
 #[diesel(table_name = schema::users)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct UserModel {

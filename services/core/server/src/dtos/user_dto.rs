@@ -9,7 +9,7 @@ use uuid::Uuid;
 use super::Model;
 use crate::dtos::DTO;
 
-#[derive(Debug, Clone, Serialize, Deserialize, ToSchema, TS)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS, ToSchema)]
 #[ts(export)]
 pub struct UserDTO {
     #[schema(value_type = String)]
@@ -26,7 +26,7 @@ pub struct UserDTO {
     pub created_at: DateTime<Utc>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, ToSchema, TS)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS, ToSchema)]
 #[ts(export)]
 pub struct NewUserDTO {
     pub name: String,

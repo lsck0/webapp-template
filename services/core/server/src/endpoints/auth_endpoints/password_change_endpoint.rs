@@ -9,7 +9,7 @@ use crate::dtos::{DTO, session_dto::SessionDTO};
 
 pub const PW_CHANGE_ENDPOINT: &str = "/api/auth/password-change";
 
-#[derive(Debug, Clone, Serialize, Deserialize, ToSchema, TS)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS, ToSchema)]
 #[ts(export)]
 pub struct PasswordChangeInfo {
     pub old_password: String,

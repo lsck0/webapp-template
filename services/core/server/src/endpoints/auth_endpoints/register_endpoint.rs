@@ -15,7 +15,7 @@ use utoipa::ToSchema;
 
 pub const REGISTER_ENDPOINT: &str = "/api/auth/register";
 
-#[derive(Debug, Clone, Serialize, Deserialize, ToSchema, TS)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS, ToSchema)]
 #[ts(export)]
 pub struct RegisterInfo {
     pub name: String,

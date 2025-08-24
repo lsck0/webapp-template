@@ -52,7 +52,7 @@ pub struct NewSessionModel {
     pub ip_address: IpNetwork,
 }
 
-#[derive(Debug, Clone, Queryable, Selectable, AsChangeset)]
+#[derive(Debug, Clone, AsChangeset, Queryable, Selectable)]
 #[diesel(table_name = schema::sessions)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct SessionModel {

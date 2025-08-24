@@ -21,7 +21,7 @@ pub fn user_router() -> Router {
     )
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, ToSchema, TS)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS, ToSchema)]
 #[serde(untagged)]
 #[ts(export)]
 pub enum GetUserRequest {
@@ -55,7 +55,7 @@ async fn get_user_handler(parameters: Query<GetUserRequest>, user: UserDTO) -> S
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, ToSchema, TS)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS, ToSchema)]
 #[serde(untagged)]
 #[ts(export)]
 pub enum UpdateUserRequest {
@@ -86,7 +86,7 @@ async fn update_user_handler(Json(_parameters): Json<UpdateUserRequest>) -> Serv
     return Ok(Json("Not Implemented."));
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, ToSchema, TS)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS, ToSchema)]
 #[serde(untagged)]
 #[ts(export)]
 pub enum DeleteUserRequest {

@@ -16,7 +16,7 @@ pub struct NewLoginAttemptModel {
     pub user_id: Uuid,
 }
 
-#[derive(Debug, Clone, Queryable, Selectable, AsChangeset)]
+#[derive(Debug, Clone, AsChangeset, Queryable, Selectable)]
 #[diesel(table_name = schema::login_attempts)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct LoginAttemptModel {

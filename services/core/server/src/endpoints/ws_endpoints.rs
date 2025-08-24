@@ -55,7 +55,7 @@ async fn ws_handler(ws: WebSocketUpgrade, session: SessionDTO) -> impl IntoRespo
 static CLIENTS: LazyLock<Arc<Mutex<Vec<(Uuid, WebSocket)>>>> = LazyLock::new(|| Arc::new(Mutex::new(vec![])));
 
 /// WebSocket Notifications.
-#[derive(Debug, Clone, Display, Serialize, Deserialize, ToSchema, TS)]
+#[derive(Debug, Clone, Serialize, Deserialize, Display, TS, ToSchema)]
 #[ts(export)]
 pub enum WsNotification {
     UpdatePosts,

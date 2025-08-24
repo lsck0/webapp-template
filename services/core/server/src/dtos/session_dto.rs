@@ -13,7 +13,7 @@ use uuid::Uuid;
 use super::{DTO, Model};
 use crate::dtos::user_dto::UserDTO;
 
-#[derive(Debug, Clone, Serialize, Deserialize, ToSchema, TS)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS, ToSchema)]
 #[ts(export)]
 pub struct SessionDTO {
     #[schema(value_type = String)]

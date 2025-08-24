@@ -32,7 +32,7 @@ pub fn post_router() -> Router {
     )
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, ToSchema, TS)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS, ToSchema)]
 #[serde(untagged)]
 #[ts(export)]
 pub enum GetPostRequest {
@@ -86,7 +86,7 @@ async fn get_post_handler(parameters: Query<GetPostRequest>) -> ServerResult<imp
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, ToSchema, TS)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS, ToSchema)]
 #[serde(untagged)]
 #[ts(export)]
 pub enum CreatePostRequest {
@@ -127,7 +127,7 @@ async fn create_post_handler(Json(parameters): Json<CreatePostRequest>) -> Serve
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, ToSchema, TS)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS, ToSchema)]
 #[serde(untagged)]
 #[ts(export)]
 pub enum UpdatePostRequest {
@@ -168,7 +168,7 @@ async fn update_post_handler(Json(parameters): Json<UpdatePostRequest>) -> Serve
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, ToSchema, TS)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS, ToSchema)]
 #[serde(untagged)]
 #[ts(export)]
 pub enum DeletePostRequest {

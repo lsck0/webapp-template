@@ -17,7 +17,7 @@ pub struct NewPostModel {
     pub author: Uuid,
 }
 
-#[derive(Debug, Clone, Queryable, Selectable, AsChangeset)]
+#[derive(Debug, Clone, AsChangeset, Queryable, Selectable)]
 #[diesel(table_name = schema::posts)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct PostModel {

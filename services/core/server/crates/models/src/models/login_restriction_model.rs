@@ -13,7 +13,7 @@ pub struct NewLoginRestrictionModel {
     pub restricted_until: DateTime<Utc>,
 }
 
-#[derive(Debug, Clone, Queryable, Selectable, AsChangeset)]
+#[derive(Debug, Clone, AsChangeset, Queryable, Selectable)]
 #[diesel(table_name = schema::login_restrictions)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct LoginRestrictionModel {

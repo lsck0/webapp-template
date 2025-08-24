@@ -18,7 +18,7 @@ pub struct NewInviteModel {
     pub expires_at: DateTime<Utc>,
 }
 
-#[derive(Debug, Clone, Queryable, Selectable, AsChangeset)]
+#[derive(Debug, Clone, AsChangeset, Queryable, Selectable)]
 #[diesel(table_name = schema::invites)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct InviteModel {

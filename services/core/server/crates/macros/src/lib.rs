@@ -37,7 +37,7 @@ pub fn derive_env_variables(input: TokenStream) -> TokenStream {
 /// ```
 ///
 /// ```rust, no_run
-/// #[derive(Display, EnumString, AsExpression, FromSqlRow, PgEnum)]
+/// #[derive(AsExpression, Display, EnumString, FromSqlRow, PgEnum)]
 /// #[diesel(sql_type = schema::sql_types::ExampleEnumType)]
 /// enum ExampleEnumType {
 ///     A,
@@ -55,7 +55,7 @@ pub fn derive_pg_enum(input: TokenStream) -> TokenStream {
 /// This is a rust adapter for an arbitrary PostgreSQL text type.
 ///
 /// ```rust, no_run
-/// #[derive(Display, EnumString, AsExpression, FromSqlRow, PgText)]
+/// #[derive(AsExpression, Display, EnumString, FromSqlRow, PgText)]
 /// #[diesel(sql_type = diesel::sql_types::Text)]
 /// enum Thing {
 ///     A,

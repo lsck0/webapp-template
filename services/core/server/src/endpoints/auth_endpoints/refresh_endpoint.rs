@@ -12,7 +12,7 @@ use crate::dtos::{Model, session_dto::SessionDTO};
 
 pub const REFRESH_ENDPOINT: &str = "/api/auth/refresh";
 
-#[derive(Debug, Clone, Serialize, Deserialize, ToSchema, TS)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS, ToSchema)]
 #[ts(export)]
 pub struct SessionRefreshInfo {
     #[schema(value_type = String)]

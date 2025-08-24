@@ -13,7 +13,7 @@ pub struct NewRoleModel {
     pub priority: i32,
 }
 
-#[derive(Debug, Clone, Queryable, Selectable, AsChangeset)]
+#[derive(Debug, Clone, AsChangeset, Queryable, Selectable)]
 #[diesel(table_name = schema::roles)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct RoleModel {
@@ -36,7 +36,7 @@ pub struct NewUserRoleModel {
     pub role_id: Uuid,
 }
 
-#[derive(Debug, Clone, Queryable, Selectable, AsChangeset)]
+#[derive(Debug, Clone, AsChangeset, Queryable, Selectable)]
 #[diesel(table_name = schema::user_roles)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct UserRoleModel {

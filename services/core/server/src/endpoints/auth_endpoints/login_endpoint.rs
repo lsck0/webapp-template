@@ -22,7 +22,7 @@ use crate::dtos::{DTO, Model, session_dto::SessionDTO};
 
 pub const LOGIN_ENDPOINT: &str = "/api/auth/login";
 
-#[derive(Debug, Clone, Serialize, Deserialize, ToSchema, TS)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS, ToSchema)]
 #[ts(export)]
 pub struct LoginInfo {
     pub name: String,

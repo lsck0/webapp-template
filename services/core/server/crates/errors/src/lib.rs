@@ -77,7 +77,7 @@ pub enum ServerError {
 }
 
 /// User errors.
-#[derive(Debug, Clone, Serialize, Deserialize, ToSchema, TS)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS, ToSchema)]
 #[ts(export)]
 pub enum UserError {
     BodyError(Vec<FieldError>),
@@ -86,7 +86,7 @@ pub enum UserError {
 }
 
 /// A field error.
-#[derive(Debug, Clone, Serialize, Deserialize, ToSchema, TS)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS, ToSchema)]
 #[ts(export)]
 pub struct FieldError {
     pub field: String,
@@ -94,7 +94,7 @@ pub struct FieldError {
 }
 
 /// Reasons for why fields are invalid.
-#[derive(Debug, Clone, Serialize, Deserialize, ToSchema, TS)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS, ToSchema)]
 #[ts(export)]
 pub enum FieldErrorReason {
     InvalidRange { min: i32, max: i32 },
