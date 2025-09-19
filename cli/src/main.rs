@@ -27,10 +27,14 @@ struct Args {
 enum Commands {
     /// Initialize the project
     Init,
+
     /// Run the project in development mode
     Dev,
     /// Run the project in production mode
     Prod,
+    /// Build the project in production mode
+    Build,
+
     /// Test the project.
     Test,
     /// Benchmark the project.
@@ -41,6 +45,7 @@ enum Commands {
     Bundle,
     /// Format the codebase.
     Format,
+
     /// Run diesel (DB management).
     #[command(trailing_var_arg = true)]
     Diesel {
@@ -64,7 +69,7 @@ enum Commands {
 }
 
 /// Supported shells.
-#[derive(clap::ValueEnum, Clone)]
+#[derive(Clone, clap::ValueEnum)]
 enum Shell {
     Bash,
     Zsh,
@@ -95,6 +100,7 @@ fn main() {
         Commands::Init => init(),
         Commands::Dev => dev(),
         Commands::Prod => prod(),
+        Commands::Build => build(),
         Commands::Test => test(),
         Commands::Bench => bench(),
         Commands::Ci => ci(),
@@ -113,7 +119,7 @@ fn main() {
                 Shell::Zsh => generate(Zsh, &mut cmd, bin_name, &mut io::stdout()),
                 Shell::Fish => generate(Fish, &mut cmd, bin_name, &mut io::stdout()),
             };
-            return ();
+            return;
         }
     };
 

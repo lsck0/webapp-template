@@ -40,6 +40,13 @@ pub fn prod() -> Result<()> {
 }
 
 #[instrument]
+pub fn build() -> Result<()> {
+    run!("COMPOSE_BAKE=true docker compose --project-name wat --file ../infra/prod.compose.yml build");
+
+    return Ok(());
+}
+
+#[instrument]
 pub fn test() -> Result<()> {
     run!("COMPOSE_BAKE=true docker compose --project-name wat --file ../infra/test.compose.yml up --build");
 

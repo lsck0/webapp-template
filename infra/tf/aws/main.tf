@@ -35,7 +35,7 @@ resource "aws_elastic_beanstalk_application" "webapp-template" {
 resource "aws_elastic_beanstalk_environment" "webapp-template-env" {
   name                = "webapp-template-env"
   application         = aws_elastic_beanstalk_application.webapp-template.name
-  solution_stack_name = "64bit Amazon Linux 2023 v4.6.0 running Docker"
+  solution_stack_name = "64bit Amazon Linux 2023 v4.7.1 running Docker"
   cname_prefix        = "webapp-template"
 
   tags = {
@@ -46,10 +46,10 @@ resource "aws_elastic_beanstalk_environment" "webapp-template-env" {
   # EC2 Base Instance
   # Name        | vCPU | Memory (GiB) | Cost in $/h | Cost in $/month
   # ----------- | ---- | ------------ | ----------- | ---------------
-  # t3.nano     | 2    | 0.5          | 0.0052      | 3.744            <-- Only usable if monitoring tools are disabled
+  # t3.nano     | 2    | 0.5          | 0.0052      | 3.744
   # t3.micro    | 2    | 1            | 0.0104      | 7.488
   # t3.small    | 2    | 2            | 0.0208      | 14.97
-  # t3.medium   | 2    | 4            | 0.0417      | 30.048           <-- Minimal instance for the Full Webapp Template (Monitoring Tools are heavy on RAM)
+  # t3.medium   | 2    | 4            | 0.0417      | 30.048
   # t3.large    | 2    | 8            | 0.0832      | 60.096
   # t3.xlarge   | 4    | 16           | 0.1664      | 120.192
   # t3.2xlarge  | 8    | 32           | 0.3328      | 240.384

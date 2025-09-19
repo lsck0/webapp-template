@@ -17,10 +17,10 @@ enum Dependency {
 }
 use Dependency::*;
 
-const NEEDED_BASE_DEPENDENCIES: [Dependency; 9] = [
+const NEEDED_BASE_DEPENDENCIES: [Dependency; 8] = [
     SameName("cargo"),
     SameName("clang"),
-    SameName("docker"),
+    // SameName("docker"),
     // SameName("docker-compose"),
     SameName("git"),
     SameName("mold"),
