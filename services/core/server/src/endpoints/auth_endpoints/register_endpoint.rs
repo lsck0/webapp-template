@@ -2,12 +2,9 @@ use axum::{Json, response::IntoResponse};
 use chrono::Utc;
 use crypto::HashedPassword;
 use errors::{FieldError, FieldErrorReason, ServerResult, UserError, bail, body_error, ensure, validate_string_length};
-use models::{
-    models::{
-        invite_model::InviteModel,
-        user_model::{NewUserModel, UserModel},
-    },
-    permissions::Permissions,
+use models::models::{
+    invite_model::InviteModel,
+    user_model::{NewUserModel, UserModel},
 };
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;

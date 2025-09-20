@@ -11,7 +11,7 @@ pub fn init() -> Result<()> {
     info!("Setting up pre-commit hooks.");
 
     if !is_binary_available("pre-commit") {
-        error!("pre-commit not found, please install it with pip.");
+        error!("pre-commit not found, please install it.");
     }
 
     ensure!(
@@ -25,8 +25,8 @@ pub fn init() -> Result<()> {
 #[instrument]
 pub fn dev() -> Result<()> {
     run!(
-        "COMPOSE_BAKE=true docker compose --project-name wat --file ../infra/dev.compose.yml up --build \
-         --force-recreate --remove-orphans --watch"
+        "GIT_COMMIT=$(git rev-parse HEAD) COMPOSE_BAKE=true docker compose --project-name wat --file \
+         ../infra/dev.compose.yml up --build --force-recreate --remove-orphans --abort-on-container-exit --watch"
     );
 
     return Ok(());
@@ -34,34 +34,36 @@ pub fn dev() -> Result<()> {
 
 #[instrument]
 pub fn prod() -> Result<()> {
-    run!("COMPOSE_BAKE=true docker compose --project-name wat --file ../infra/prod.compose.yml up --build");
-
-    return Ok(());
-}
-
-#[instrument]
-pub fn build() -> Result<()> {
-    run!("COMPOSE_BAKE=true docker compose --project-name wat --file ../infra/prod.compose.yml build");
+    run!(
+        "GIT_COMMIT=$(git rev-parse HEAD) COMPOSE_BAKE=true docker compose --project-name wat --file \
+         ../infra/prod.compose.yml up --build --force-recreate --remove-orphans --abort-on-container-exit"
+    );
 
     return Ok(());
 }
 
 #[instrument]
 pub fn test() -> Result<()> {
-    run!("COMPOSE_BAKE=true docker compose --project-name wat --file ../infra/test.compose.yml up --build");
+    run!(
+        "GIT_COMMIT=$(git rev-parse HEAD) COMPOSE_BAKE=true docker compose --project-name wat --file \
+         ../infra/test.compose.yml up --build --force-recreate  --remove-orphans --abort-on-container-exit"
+    );
 
     return Ok(());
 }
 
 #[instrument]
 pub fn bench() -> Result<()> {
-    run!("COMPOSE_BAKE=true docker compose --project-name wat --file ../infra/bench.compose.yml up --build");
+    run!(
+        "GIT_COMMIT=$(git rev-parse HEAD) COMPOSE_BAKE=true docker compose --project-name wat --file \
+         ../infra/bench.compose.yml up --build --force-recreate  --remove-orphans --abort-on-container-exit"
+    );
 
     return Ok(());
 }
 
 #[instrument]
-pub fn ci() -> Result<()> {
+pub fn check() -> Result<()> {
     ensure!(
         run!(
             "cd ../services/core/server; cargo deny check --allow unlicensed --allow license-not-encountered --allow \
@@ -151,7 +153,7 @@ pub fn format() -> Result<()> {
 pub fn diesel(query: String) -> Result<()> {
     ensure!(
         run!(
-            "cd ../services/core/server/; diesel --database-url=postgres://admin:password@localhost:3002/root {query}"
+            "cd ../services/core/server/; diesel --database-url=postgres://admin:password@localhost:5432/root {query}"
         )
         .success(),
         "diesel command failed: {query}"

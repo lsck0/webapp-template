@@ -12,7 +12,7 @@ use axum::{Router, routing::get};
 use axum_prometheus::PrometheusMetricLayer;
 use middlewares::{add_tracing_layer, initialize_tracing};
 use models::{DbInitFlags, initialize_database};
-use openssl_probe::init_ssl_cert_env_vars;
+use openssl_probe::init_openssl_env_vars;
 use tasks::initialize_cron_tasks;
 use tower_http::cors::{Any, CorsLayer};
 use utoipa::{
@@ -37,7 +37,9 @@ impl Modify for SecurityAddon {
 }
 
 pub async fn app() -> Router {
-    init_ssl_cert_env_vars();
+    unsafe {
+        init_openssl_env_vars();
+    }
 
     initialize_tracing();
     initialize_database(DbInitFlags::NONE);

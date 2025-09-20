@@ -6,5 +6,5 @@ pub mod models;
 mod schema;
 
 // pub use entities::*;
-pub use init::{initialize_database, DbInitFlags};
+pub use init::{DbInitFlags, initialize_database};
 pub use models::*;

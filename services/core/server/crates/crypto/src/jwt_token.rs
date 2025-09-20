@@ -3,7 +3,7 @@ use std::time::Duration;
 use chrono::Utc;
 use config::ServerConfig;
 use errors::{ServerError, ServerResult};
-use jsonwebtoken::{decode, decode_header, encode, DecodingKey, EncodingKey, Header, Validation};
+use jsonwebtoken::{DecodingKey, EncodingKey, Header, Validation, decode, decode_header, encode};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 

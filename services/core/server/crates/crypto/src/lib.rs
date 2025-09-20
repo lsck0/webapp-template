@@ -1,7 +1,7 @@
 //! Crypto crate for password hashing, JWT, OTP, and invite tokens.
 
 #![allow(clippy::needless_return)]
-#![feature(duration_constructors, random, duration_constructors_lite)]
+#![feature(duration_constructors, random)]
 
 mod invite_token;
 mod jwt_token;

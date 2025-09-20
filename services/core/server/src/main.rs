@@ -1,6 +1,6 @@
 #![allow(clippy::needless_return)]
 
-use pyroscope::{PyroscopeAgent, Result};
+use pyroscope::PyroscopeAgent;
 use pyroscope_pprofrs::{PprofConfig, pprof_backend};
 use tokio::net::TcpListener;
 use tracing::info;

@@ -43,7 +43,7 @@ impl HashedPassword {
 
         let is_password_correct = Argon2::default()
             .verify_password(password.as_bytes(), &hash)
-            .map_or(false, |_| true);
+            .is_ok_and(|_| true);
 
         return is_password_correct;
     }

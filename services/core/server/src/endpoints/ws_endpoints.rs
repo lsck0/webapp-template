@@ -65,7 +65,7 @@ pub enum WsNotification {
 impl WsNotification {
     /// Sends a notification to all connected clients.
     pub(crate) async fn send(&self) {
-        let message = serde_json::to_string(self).unwrap();
+        let message = serde_json::to_string(self).expect("unreachable");
 
         let mut clients = CLIENTS.lock().await;
         let mut remove_list = vec![];

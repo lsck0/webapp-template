@@ -27,13 +27,14 @@ datasources:
   - name: Postgres
     type: postgres
     access: proxy
-    url: postgres://root:1UdEQQTMBGCCWxvY2FsaG9zdIcEfwAAATAdBgNVHQ4EFgQUgGAHp2OojO06lrYu@postgres:5432/root
+    url: postgres:5432
     database: root
     user: root
-    password: 1UdEQQTMBGCCWxvY2FsaG9zdIcEfwAAATAdBgNVHQ4EFgQUgGAHp2OojO06lrYu
+    secureJsonData:
+      password: "1UdEQQTMBGCCWxvY2FsaG9zdIcEfwAAATAdBgNVHQ4EFgQUgGAHp2OojO06lrYu"
     jsonData:
       sslmode: disable
-      maxOpenConns: 1
+      maxOpenConns: 5
       maxIdleConns: 1
       connMaxLifetime: 14400
       readTimeout: 30

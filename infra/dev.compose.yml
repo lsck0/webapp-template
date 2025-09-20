@@ -1,64 +1,27 @@
 services:
-  nginx:
-    container_name: wat-dev-nginx
+  # --------------------------------------------------------------------------
+  # CORE
+  # --------------------------------------------------------------------------
+
+  ai:
+    container_name: wat-dev-ai
     build:
-      context: ../services/core/nginx
-      dockerfile: Dockerfile
-    volumes:
-      - ../services/security/modsecurity/modsecurity.conf:/etc/modsecurity/modsecurity.conf
-      - ../services/security/modsecurity/crs:/etc/modsecurity/crs
+      context: ../services/core/ai
+      dockerfile: .docker/dev.Dockerfile
     env_file:
       - ./env/dev.env
-    ports:
-      - 80:80
-      - 443:443
-      - 3000:3000
-      - 3001:3001
-      - 3002:3002
     depends_on:
-      anubis:
-        condition: service_healthy
-      client:
-        condition: service_healthy
-      server:
-        condition: service_healthy
-      grafana:
-        condition: service_healthy
-      pgweb:
-        condition: service_healthy
-      minio:
+      ollama:
         condition: service_healthy
     develop:
       watch:
         - action: rebuild
-          path: ../services/core/nginx/Dockerfile
+          path: ../services/core/ai/.docker/dev.Dockerfile
         - action: rebuild
-          path: ../services/core/nginx/nginx.conf
-        - action: rebuild
-          path: ../services/security/modsecurity/
-
-  nginx-metrics:
-    container_name: wat-dev-nginx-metrics
-    build:
-      context: ../services/monitoring/nginx-metrics/
-      dockerfile: Dockerfile
-    depends_on:
-      nginx:
-        condition: service_healthy
-
-  anubis:
-    container_name: wat-dev-anubis
-    build:
-      context: ../services/security/anubis
-      dockerfile: Dockerfile
-    develop:
-      watch:
-        - action: rebuild
-          path: ../services/security/anubis/Dockerfile
-        - action: rebuild
-          path: ../services/security/anubis/robots.txt
-        - action: rebuild
-          path: ../services/security/anubis/policy.yaml
+          path: ../services/core/ai/pyproject.toml
+        - action: sync
+          path: ../services/core/ai/
+          target: /app/
 
   client:
     container_name: wat-dev-client
@@ -79,6 +42,53 @@ services:
         - action: sync
           path: ../services/core/client/
           target: /app/
+
+  nginx:
+    container_name: wat-dev-nginx
+    build:
+      context: ../services/core/nginx
+      dockerfile: Dockerfile
+    volumes:
+      - ../services/security/modsecurity/modsecurity.conf:/etc/modsecurity/modsecurity.conf
+      - ../services/security/modsecurity/crs:/etc/modsecurity/crs
+    env_file:
+      - ./env/dev.env
+    ports:
+      - 80:80
+      - 443:443
+      - 3000:3000
+      - 3001:3001
+      - 3002:3002
+    depends_on:
+      anubis:
+        condition: service_healthy
+      server:
+        condition: service_healthy
+      client:
+        condition: service_healthy
+      grafana:
+        condition: service_healthy
+      pgweb:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    develop:
+      watch:
+        - action: rebuild
+          path: ../services/core/nginx/Dockerfile
+        - action: rebuild
+          path: ../services/core/nginx/nginx.conf
+        - action: rebuild
+          path: ../services/security/modsecurity/
+
+  ollama:
+    container_name: wat-dev-ollama
+    build:
+      context: ../services/core/ollama
+      dockerfile: Dockerfile
+    volumes:
+      - dev_ollama_data:/root/.ollama
+    tty: true
 
   server:
     container_name: wat-dev-server
@@ -106,73 +116,28 @@ services:
           path: ../services/core/server/
           target: /app/
 
-  ai:
-    container_name: wat-dev-ai
-    build:
-      context: ../services/core/ai
-      dockerfile: .docker/dev.Dockerfile
+  # --------------------------------------------------------------------------
+  # MONITORING
+  # --------------------------------------------------------------------------
+
+  autoheal:
+    container_name: wat-dev-autoheal
+    image: willfarrell/autoheal
     env_file:
       - ./env/dev.env
-    depends_on:
-      ollama:
-        condition: service_healthy
-    develop:
-      watch:
-        - action: rebuild
-          path: ../services/core/ai/.docker/dev.Dockerfile
-        - action: rebuild
-          path: ../services/core/ai/pyproject.toml
-        - action: sync
-          path: ../services/core/ai/
-          target: /app/
-
-  ollama:
-    container_name: wat-dev-ollama
-    build:
-      context: ../services/core/ollama
-      dockerfile: Dockerfile
     volumes:
-      - dev_ollama_data:/root/.ollama
-    tty: true
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
 
-  postgres:
-    container_name: wat-dev-postgres
-    build:
-      context: ../services/storage/postgres
-      dockerfile: Dockerfile
+  cadvisor:
+    container_name: wat-dev-cadvisor
+    image: gcr.io/cadvisor/cadvisor:v0.52.0
+    privileged: true
     volumes:
-      - dev_postgres_data:/var/lib/postgresql/data
-    env_file:
-      - ./env/dev.env
-
-  pgweb:
-    container_name: wat-dev-pgweb
-    build:
-      context: ../services/monitoring/pgweb
-      dockerfile: Dockerfile
-    env_file:
-      - ./env/dev.env
-    depends_on:
-      postgres:
-        condition: service_healthy
-
-  redis:
-    container_name: wat-dev-redis
-    build:
-      context: ../services/storage/redis
-      dockerfile: Dockerfile
-    volumes:
-      - dev_redis_data:/data
-    env_file:
-      - ./env/dev.env
-
-  minio:
-    container_name: wat-dev-minio
-    build:
-      context: ../services/storage/minio
-      dockerfile: Dockerfile
-    volumes:
-      - dev_minio_data:/data
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker:/var/lib/docker:ro
     env_file:
       - ./env/dev.env
 
@@ -188,6 +153,8 @@ services:
       - ./env/dev.env
     depends_on:
       cadvisor:
+        condition: service_healthy
+      loki:
         condition: service_healthy
       prometheus:
         condition: service_healthy
@@ -206,6 +173,34 @@ services:
     env_file:
       - ./env/dev.env
 
+  nginx-metrics:
+    container_name: wat-dev-nginx-metrics
+    build:
+      context: ../services/monitoring/nginx-metrics/
+      dockerfile: Dockerfile
+    depends_on:
+      nginx:
+        condition: service_healthy
+
+  pgweb:
+    container_name: wat-dev-pgweb
+    build:
+      context: ../services/monitoring/pgweb
+      dockerfile: Dockerfile
+    env_file:
+      - ./env/dev.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  prometheus:
+    container_name: wat-dev-prometheus
+    build:
+      context: ../services/monitoring/prometheus
+      dockerfile: Dockerfile
+    env_file:
+      - ./env/dev.env
+
   promtail:
     container_name: wat-dev-promtail
     build:
@@ -220,26 +215,6 @@ services:
       loki:
         condition: service_healthy
 
-  prometheus:
-    container_name: wat-dev-prometheus
-    build:
-      context: ../services/monitoring/prometheus
-      dockerfile: Dockerfile
-    env_file:
-      - ./env/dev.env
-
-  cadvisor:
-    container_name: wat-dev-cadvisor
-    image: gcr.io/cadvisor/cadvisor:v0.52.0
-    privileged: true
-    volumes:
-      - /:/rootfs:ro
-      - /var/run:/var/run:ro
-      - /sys:/sys:ro
-      - /var/lib/docker:/var/lib/docker:ro
-    env_file:
-      - ./env/dev.env
-
   pyroscope:
     container_name: wat-dev-pyroscope
     build:
@@ -248,14 +223,80 @@ services:
     env_file:
       - ./env/dev.env
 
-  autoheal:
-    container_name: wat-dev-autoheal
-    image: willfarrell/autoheal
+  # --------------------------------------------------------------------------
+  # SECURITY
+  # --------------------------------------------------------------------------
+
+  anubis:
+    container_name: wat-dev-anubis
+    build:
+      context: ../services/security/anubis
+      dockerfile: Dockerfile
+    develop:
+      watch:
+        - action: rebuild
+          path: ../services/security/anubis/Dockerfile
+        - action: rebuild
+          path: ../services/security/anubis/robots.txt
+        - action: rebuild
+          path: ../services/security/anubis/policy.yaml
+
+  # --------------------------------------------------------------------------
+  # STORAGE
+  # --------------------------------------------------------------------------
+
+  minio:
+    container_name: wat-dev-minio
+    build:
+      context: ../services/storage/minio
+      dockerfile: Dockerfile
+    volumes:
+      - dev_minio_data:/data
     env_file:
       - ./env/dev.env
+
+  postgres:
+    container_name: wat-dev-postgres
+    build:
+      context: ../services/storage/postgres
+      dockerfile: Dockerfile
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    restart: always
+      - dev_postgres_data:/var/lib/postgresql/data
+    env_file:
+      - ./env/dev.env
+    develop:
+      watch:
+        - action: rebuild
+          path: ../services/storage/postgres/Dockerfile
+        - action: rebuild
+          path: ../services/storage/postgres/init.sql
+        - action: rebuild
+          path: ../services/storage/postgres/postgresql.conf
+
+  postgres-backup:
+    container_name: wat-dev-postgres-backup
+    build:
+      context: ../services/storage/postgres-backup
+      dockerfile: Dockerfile
+    volumes:
+      - dev_postgres_data:/var/lib/postgresql/data:ro
+    env_file:
+      - ./env/dev.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+
+  redis:
+    container_name: wat-dev-redis
+    build:
+      context: ../services/storage/redis
+      dockerfile: Dockerfile
+    volumes:
+      - dev_redis_data:/data
+    env_file:
+      - ./env/dev.env
 
 volumes:
   dev_grafana_data1: {}

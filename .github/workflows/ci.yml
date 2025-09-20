@@ -30,7 +30,11 @@ jobs:
       - name: Setup Cargo Binary Install
         uses: cargo-bins/cargo-binstall@main
 
-      - name: Setup Other Dependencies
+      - name: Install Cargo Dependencies
+        run: |
+          cargo binstall cargo-deny diesel_cli --no-confirm --disable-telemetry
+
+      - name: Install Other Dependencies
         run: |
           sudo sed -i '/^deb .* main/ s/main/main universe/' /etc/apt/sources.list
           sudo apt-get update
@@ -38,7 +42,7 @@ jobs:
 
       - name: Run CI
         run: |
-          ./cli.sh ci
+          ./cli.sh check
 
       - name: Format Codebase
         run: |

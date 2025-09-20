@@ -58,7 +58,7 @@ pub(crate) fn add_tracing_layer(router: Router) -> Router {
                         .headers()
                         .get("X-Real-IP")
                         .and_then(|header| header.to_str().ok())
-                        .unwrap_or_else(|| "unknown");
+                        .unwrap_or("unknown");
 
                     let body = request.extensions().get::<RequestBody>().map(|body| body.0.clone());
 

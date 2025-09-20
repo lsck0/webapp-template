@@ -32,20 +32,17 @@ enum Commands {
     Dev,
     /// Run the project in production mode
     Prod,
-    /// Build the project in production mode
-    Build,
-
-    /// Test the project.
+    /// Run the project in test mode
     Test,
-    /// Benchmark the project.
+    /// Run the project in benchmark mode
     Bench,
-    /// Run all checks without tests.
-    Ci,
-    /// Bundle the project.
+    /// Check if the project compiles and passes linters
+    Check,
+    /// Bundle the project
     Bundle,
-    /// Format the codebase.
-    Format,
 
+    /// Format the codebase
+    Format,
     /// Run diesel (DB management).
     #[command(trailing_var_arg = true)]
     Diesel {
@@ -56,6 +53,7 @@ enum Commands {
     ExportBindings,
     /// Generate pwa artifacts.
     GeneratePwaAssets,
+
     /// Open the server documentation.
     ServerDocs,
     /// Show some stats about the project.
@@ -98,19 +96,22 @@ fn main() {
     // execute command
     let result = match args.command {
         Commands::Init => init(),
+
         Commands::Dev => dev(),
         Commands::Prod => prod(),
-        Commands::Build => build(),
         Commands::Test => test(),
         Commands::Bench => bench(),
-        Commands::Ci => ci(),
+        Commands::Check => check(),
         Commands::Bundle => bundle(),
+
         Commands::Format => format(),
         Commands::Diesel { query } => diesel(query.join(" ")),
         Commands::ExportBindings => export_bindings(),
         Commands::GeneratePwaAssets => generate_pwa_assets(),
+
         Commands::ServerDocs => server_docs(),
         Commands::Stats => stats(),
+
         Commands::Completions { shell } => {
             let mut cmd = Args::command();
             let bin_name = cmd.get_name().to_string();

@@ -9,7 +9,7 @@
 
 pub mod macros;
 
-use axum::{extract::rejection::JsonRejection, http::StatusCode, response::IntoResponse, Json};
+use axum::{Json, extract::rejection::JsonRejection, http::StatusCode, response::IntoResponse};
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 use ts_rs::TS;

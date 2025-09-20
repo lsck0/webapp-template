@@ -1,6 +1,6 @@
 use axum::response::IntoResponse;
 use chrono::Duration;
-use errors::{ServerError, ServerResult, UserError, bail};
+use errors::{ServerResult, UserError};
 use models::models::invite_model::InviteModel;
 
 use crate::dtos::user_dto::UserDTO;

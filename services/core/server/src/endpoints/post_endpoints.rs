@@ -1,5 +1,5 @@
 use axum::{Json, Router, extract::Query, middleware, response::IntoResponse, routing::get};
-use errors::{ServerError, ServerResult, UserError, Validate, bail, ensure};
+use errors::{ServerError, ServerResult, UserError, Validate, bail};
 use models::models::post_model::PostModel;
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
