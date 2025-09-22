@@ -1,0 +1,15 @@
+- ( ) docs scaffolding
+- ( ) test postgres restore, make script to do so (locally running)
+- ( ) fix minio webui websocket issue with nginx
+- ( ) minio / postgres / redis dashboard in grafana?
+- ( ) server auth/crypto rework
+- ( ) server testing framework
+- ( ) client api/auth implementation
+- ( ) prod, testing and bench docker configurations
+- ( ) nginx monitoring tool protection
+- ( ) security checks against the running system?
+- ( ) offsite minio backup to S3
+- ( ) docker swarm deployment
+-- ( ) swarm config files
+-- ( ) swarm deploy script
+-- ( ) postgres restore script

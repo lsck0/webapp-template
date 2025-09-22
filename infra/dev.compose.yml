@@ -264,27 +264,7 @@ services:
       - dev_postgres_data:/var/lib/postgresql/data
     env_file:
       - ./env/dev.env
-    develop:
-      watch:
-        - action: rebuild
-          path: ../services/storage/postgres/Dockerfile
-        - action: rebuild
-          path: ../services/storage/postgres/init.sql
-        - action: rebuild
-          path: ../services/storage/postgres/postgresql.conf
-
-  postgres-backup:
-    container_name: wat-dev-postgres-backup
-    build:
-      context: ../services/storage/postgres-backup
-      dockerfile: Dockerfile
-    volumes:
-      - dev_postgres_data:/var/lib/postgresql/data:ro
-    env_file:
-      - ./env/dev.env
     depends_on:
-      postgres:
-        condition: service_healthy
       minio:
         condition: service_healthy
 
