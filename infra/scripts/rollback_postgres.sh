@@ -2,6 +2,9 @@
 
 set -e
 
+echo "Container Name: "
+read POSTGRES_CONTAINER_NAME
+
 echo "ARE U SURE?"
 read -p "Type 'y' to continue: " confirm
 if [ "$confirm" != "y" ]; then
