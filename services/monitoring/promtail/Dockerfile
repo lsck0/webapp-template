@@ -2,7 +2,7 @@ FROM grafana/promtail:3.5
 
 RUN apt-get update && apt-get install -y curl
 
-COPY promtail.yml /etc/promtail/promtail.yml
+COPY ./promtail.yml /etc/promtail/promtail.yml
 
 CMD ["-config.file=/etc/promtail/promtail.yml"]
 

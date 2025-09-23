@@ -5,7 +5,6 @@
 - ( ) server testing framework
 - ( ) client api/auth implementation
 - ( ) prod, testing and bench docker configurations
-- ( ) nginx monitoring tool protection
 - ( ) security checks against the running system?
 - ( ) offsite minio backup to S3
 - ( ) docker swarm deployment

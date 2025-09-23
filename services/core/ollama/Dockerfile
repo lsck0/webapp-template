@@ -1,6 +1,6 @@
 FROM docker.io/ollama/ollama:0.9.6
 
-COPY start.sh /start.sh
+COPY ./start.sh /start.sh
 
 ENTRYPOINT ["/start.sh"]
 
