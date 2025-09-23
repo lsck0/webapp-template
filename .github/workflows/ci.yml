@@ -38,7 +38,7 @@ jobs:
         run: |
           sudo sed -i '/^deb .* main/ s/main/main universe/' /etc/apt/sources.list
           sudo apt-get update
-          sudo apt-get install libtinfo5 mold python3-poetry
+          sudo apt-get install python3-poetry mold
 
       - name: Run CI
         run: |
