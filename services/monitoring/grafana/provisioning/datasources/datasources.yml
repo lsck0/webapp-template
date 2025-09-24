@@ -26,6 +26,7 @@ datasources:
 
   - name: Postgres
     type: postgres
+    uid: "fnsd879fnz0sadf"
     access: proxy
     url: postgres:5432
     user: root
