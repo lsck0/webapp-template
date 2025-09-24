@@ -1,4 +1,3 @@
-- ( ) update loki container version
 - ( ) test postgres restore, make script to do so (locally running)
 - ( ) fix minio webui websocket issue with nginx
 - ( ) minio / postgres / redis dashboard in grafana?
@@ -8,6 +7,7 @@
 - ( ) prod, testing and bench docker configurations
 - ( ) security checks against the running system?
 - ( ) offsite minio backup to S3
+- ( ) protect monitoring endpoints (firwall, ip whitelist, not just auth)
 - ( ) docker swarm deployment
 -- ( ) swarm config files
 -- ( ) swarm deploy script
