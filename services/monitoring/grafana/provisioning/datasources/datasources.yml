@@ -10,6 +10,7 @@ datasources:
 
   - name: Loki
     type: loki
+    uid: loki
     access: proxy
     url: http://loki/
     jsonData:
@@ -18,6 +19,7 @@ datasources:
 
   - name: Pyroscope
     type: grafana-pyroscope-datasource
+    uid: pyroscope
     access: proxy
     url: http://pyroscope:4040
     jsonData:
@@ -26,7 +28,7 @@ datasources:
 
   - name: Postgres
     type: postgres
-    uid: "fnsd879fnz0sadf"
+    uid: postgres
     access: proxy
     url: postgres:5432
     user: root

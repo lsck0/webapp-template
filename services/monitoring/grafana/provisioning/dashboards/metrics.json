@@ -43,7 +43,7 @@
         {
             "datasource": {
                 "type": "loki",
-                "uid": "P8E80F9AEF21F6940"
+                "uid": "loki"
             },
             "fieldConfig": {
                 "defaults": {
@@ -93,7 +93,7 @@
                 {
                     "datasource": {
                         "type": "loki",
-                        "uid": "P8E80F9AEF21F6940"
+                        "uid": "loki"
                     },
                     "direction": "backward",
                     "editorMode": "code",
@@ -109,7 +109,7 @@
         {
             "datasource": {
                 "type": "loki",
-                "uid": "P8E80F9AEF21F6940"
+                "uid": "loki"
             },
             "fieldConfig": {
                 "defaults": {
@@ -159,7 +159,7 @@
                 {
                     "datasource": {
                         "type": "loki",
-                        "uid": "P8E80F9AEF21F6940"
+                        "uid": "loki"
                     },
                     "direction": "backward",
                     "editorMode": "code",
@@ -175,7 +175,7 @@
         {
             "datasource": {
                 "type": "loki",
-                "uid": "P8E80F9AEF21F6940"
+                "uid": "loki"
             },
             "fieldConfig": {
                 "defaults": {
@@ -225,7 +225,7 @@
                 {
                     "datasource": {
                         "type": "loki",
-                        "uid": "P8E80F9AEF21F6940"
+                        "uid": "loki"
                     },
                     "direction": "backward",
                     "editorMode": "code",
@@ -241,7 +241,7 @@
         {
             "datasource": {
                 "type": "loki",
-                "uid": "P8E80F9AEF21F6940"
+                "uid": "loki"
             },
             "fieldConfig": {
                 "defaults": {
@@ -350,7 +350,7 @@
                 {
                     "datasource": {
                         "type": "loki",
-                        "uid": "P8E80F9AEF21F6940"
+                        "uid": "loki"
                     },
                     "direction": "backward",
                     "editorMode": "code",
@@ -365,7 +365,7 @@
         {
             "datasource": {
                 "type": "loki",
-                "uid": "P8E80F9AEF21F6940"
+                "uid": "loki"
             },
             "fieldConfig": {
                 "defaults": {
@@ -448,7 +448,7 @@
                 {
                     "datasource": {
                         "type": "loki",
-                        "uid": "P8E80F9AEF21F6940"
+                        "uid": "loki"
                     },
                     "direction": "backward",
                     "editorMode": "code",
@@ -464,7 +464,7 @@
         {
             "datasource": {
                 "type": "loki",
-                "uid": "P8E80F9AEF21F6940"
+                "uid": "loki"
             },
             "fieldConfig": {
                 "defaults": {
@@ -547,7 +547,7 @@
                 {
                     "datasource": {
                         "type": "loki",
-                        "uid": "P8E80F9AEF21F6940"
+                        "uid": "loki"
                     },
                     "direction": "backward",
                     "editorMode": "code",
@@ -563,7 +563,7 @@
         {
             "datasource": {
                 "type": "loki",
-                "uid": "P8E80F9AEF21F6940"
+                "uid": "loki"
             },
             "fieldConfig": {
                 "defaults": {
@@ -639,7 +639,7 @@
                 {
                     "datasource": {
                         "type": "loki",
-                        "uid": "P8E80F9AEF21F6940"
+                        "uid": "loki"
                     },
                     "direction": "backward",
                     "editorMode": "code",
@@ -689,7 +689,7 @@
         {
             "datasource": {
                 "type": "loki",
-                "uid": "P8E80F9AEF21F6940"
+                "uid": "loki"
             },
             "fieldConfig": {
                 "defaults": {
@@ -768,7 +768,7 @@
                 {
                     "datasource": {
                         "type": "loki",
-                        "uid": "P8E80F9AEF21F6940"
+                        "uid": "loki"
                     },
                     "direction": "backward",
                     "editorMode": "code",
@@ -849,7 +849,7 @@
         {
             "datasource": {
                 "type": "loki",
-                "uid": "P8E80F9AEF21F6940"
+                "uid": "loki"
             },
             "fieldConfig": {
                 "defaults": {
@@ -900,7 +900,7 @@
                 {
                     "datasource": {
                         "type": "loki",
-                        "uid": "P8E80F9AEF21F6940"
+                        "uid": "loki"
                     },
                     "direction": "backward",
                     "editorMode": "code",
@@ -916,7 +916,7 @@
         {
             "datasource": {
                 "type": "loki",
-                "uid": "P8E80F9AEF21F6940"
+                "uid": "loki"
             },
             "fieldConfig": {
                 "defaults": {
@@ -966,7 +966,7 @@
                 {
                     "datasource": {
                         "type": "loki",
-                        "uid": "P8E80F9AEF21F6940"
+                        "uid": "loki"
                     },
                     "direction": "backward",
                     "editorMode": "code",
@@ -1042,7 +1042,7 @@
         {
             "datasource": {
                 "type": "loki",
-                "uid": "P8E80F9AEF21F6940"
+                "uid": "loki"
             },
             "fieldConfig": {
                 "defaults": {
@@ -1093,7 +1093,7 @@
                 {
                     "datasource": {
                         "type": "loki",
-                        "uid": "P8E80F9AEF21F6940"
+                        "uid": "loki"
                     },
                     "direction": "backward",
                     "editorMode": "code",
@@ -1108,7 +1108,7 @@
         {
             "datasource": {
                 "type": "loki",
-                "uid": "P8E80F9AEF21F6940"
+                "uid": "loki"
             },
             "fieldConfig": {
                 "defaults": {
@@ -1159,7 +1159,7 @@
                 {
                     "datasource": {
                         "type": "loki",
-                        "uid": "P8E80F9AEF21F6940"
+                        "uid": "loki"
                     },
                     "direction": "backward",
                     "editorMode": "builder",
@@ -1174,7 +1174,7 @@
         {
             "datasource": {
                 "type": "loki",
-                "uid": "P8E80F9AEF21F6940"
+                "uid": "loki"
             },
             "fieldConfig": {
                 "defaults": {
@@ -1252,7 +1252,7 @@
                 {
                     "datasource": {
                         "type": "loki",
-                        "uid": "P8E80F9AEF21F6940"
+                        "uid": "loki"
                     },
                     "direction": "backward",
                     "editorMode": "code",
@@ -1268,7 +1268,7 @@
         {
             "datasource": {
                 "type": "loki",
-                "uid": "P8E80F9AEF21F6940"
+                "uid": "loki"
             },
             "fieldConfig": {
                 "defaults": {
@@ -1350,7 +1350,7 @@
                 {
                     "datasource": {
                         "type": "loki",
-                        "uid": "P8E80F9AEF21F6940"
+                        "uid": "loki"
                     },
                     "direction": "backward",
                     "editorMode": "code",
@@ -1363,7 +1363,7 @@
                 {
                     "datasource": {
                         "type": "loki",
-                        "uid": "P8E80F9AEF21F6940"
+                        "uid": "loki"
                     },
                     "direction": "backward",
                     "editorMode": "code",
@@ -1375,7 +1375,7 @@
                 {
                     "datasource": {
                         "type": "loki",
-                        "uid": "P8E80F9AEF21F6940"
+                        "uid": "loki"
                     },
                     "direction": "backward",
                     "editorMode": "code",
@@ -1388,7 +1388,7 @@
                 {
                     "datasource": {
                         "type": "loki",
-                        "uid": "P8E80F9AEF21F6940"
+                        "uid": "loki"
                     },
                     "direction": "backward",
                     "editorMode": "code",
@@ -1401,7 +1401,7 @@
                 {
                     "datasource": {
                         "type": "loki",
-                        "uid": "P8E80F9AEF21F6940"
+                        "uid": "loki"
                     },
                     "direction": "backward",
                     "editorMode": "code",
