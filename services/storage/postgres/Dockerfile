@@ -1,4 +1,4 @@
-FROM postgres:17.5
+FROM postgres:17.6
 
 # get dependencies
 RUN apt-get update && apt-get install -y \
@@ -34,11 +34,11 @@ RUN apt-get remove -y build-essential git postgresql-server-dev-17 \
 COPY ./init.sh /docker-entrypoint-initdb.d/init.sh
 COPY ./init.sql /docker-entrypoint-initdb.d/init.sql
 COPY ./postgresql.conf /etc/postgresql/postgresql.conf
+COPY ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY ./wal-g-backup-loop.sh /usr/local/bin/wal-g-backup-loop.sh
 
 EXPOSE 5432
 
-COPY ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s \

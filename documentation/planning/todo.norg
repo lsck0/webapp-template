@@ -1,3 +1,4 @@
+- ( ) update loki container version
 - ( ) test postgres restore, make script to do so (locally running)
 - ( ) fix minio webui websocket issue with nginx
 - ( ) minio / postgres / redis dashboard in grafana?

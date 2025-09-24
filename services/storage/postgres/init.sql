@@ -1,3 +1,4 @@
+-- this user is used only internally for pgweb and grafana
 DO
 $do$
 BEGIN

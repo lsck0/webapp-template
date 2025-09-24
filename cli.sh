@@ -1,3 +1,5 @@
-#!/bin/bash
+#!/bin/env bash
+
+set -e
 
 cd cli; cargo run -- $@

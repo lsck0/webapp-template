@@ -21,6 +21,7 @@ jobs:
         with:
           toolchain: nightly
           override: true
+          components: rustfmt, clippy
 
       - name: Setup LLVM and Clang
         uses: KyleMayes/install-llvm-action@v2
@@ -38,9 +39,9 @@ jobs:
         run: |
           sudo sed -i '/^deb .* main/ s/main/main universe/' /etc/apt/sources.list
           sudo apt-get update
-          sudo apt-get install python3-poetry mold
+          sudo apt-get install libtinfo5 mold python3-poetry
 
-      - name: Run CI
+      - name: Run Checks
         run: |
           ./cli.sh check
 

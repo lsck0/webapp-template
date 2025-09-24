@@ -26,7 +26,8 @@ pub fn init() -> Result<()> {
 pub fn dev() -> Result<()> {
     run!(
         "GIT_COMMIT=$(git rev-parse HEAD) COMPOSE_BAKE=true docker compose --project-name wat --file \
-         ../infra/dev.compose.yml up --build --force-recreate --remove-orphans --abort-on-container-exit --watch"
+         ../infrastructure/dev.compose.yml up --build --force-recreate --remove-orphans --abort-on-container-exit \
+         --watch"
     );
 
     return Ok(());
@@ -36,7 +37,7 @@ pub fn dev() -> Result<()> {
 pub fn prod() -> Result<()> {
     run!(
         "GIT_COMMIT=$(git rev-parse HEAD) COMPOSE_BAKE=true docker compose --project-name wat --file \
-         ../infra/prod.compose.yml up --build --force-recreate --remove-orphans --abort-on-container-exit"
+         ../infrastructure/prod.compose.yml up --build --force-recreate --remove-orphans --abort-on-container-exit"
     );
 
     return Ok(());
@@ -46,7 +47,7 @@ pub fn prod() -> Result<()> {
 pub fn test() -> Result<()> {
     run!(
         "GIT_COMMIT=$(git rev-parse HEAD) COMPOSE_BAKE=true docker compose --project-name wat --file \
-         ../infra/test.compose.yml up --build --force-recreate  --remove-orphans --abort-on-container-exit"
+         ../infrastructure/test.compose.yml up --build --force-recreate  --remove-orphans --abort-on-container-exit"
     );
 
     return Ok(());
@@ -56,7 +57,7 @@ pub fn test() -> Result<()> {
 pub fn bench() -> Result<()> {
     run!(
         "GIT_COMMIT=$(git rev-parse HEAD) COMPOSE_BAKE=true docker compose --project-name wat --file \
-         ../infra/bench.compose.yml up --build --force-recreate  --remove-orphans --abort-on-container-exit"
+         ../infrastructure/bench.compose.yml up --build --force-recreate  --remove-orphans --abort-on-container-exit"
     );
 
     return Ok(());
@@ -153,7 +154,8 @@ pub fn format() -> Result<()> {
 pub fn diesel(query: String) -> Result<()> {
     ensure!(
         run!(
-            "cd ../services/core/server/; diesel --database-url=postgres://admin:password@localhost:5432/root {query}"
+            "cd ../services/core/server/; diesel --database-url=postgres://admin:password@postgres.localhost/root \
+             {query}"
         )
         .success(),
         "diesel command failed: {query}"

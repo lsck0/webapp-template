@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/env bash
 
 # ECDSA with secp521r1 curve
 openssl ecparam -name secp521r1 -genkey -noout -out selfsigned.key

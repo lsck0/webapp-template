@@ -3,11 +3,12 @@ use tracing::{info, instrument};
 
 use crate::macros::{OutputExt, run};
 
-const NEEDED_DEPENDENCIES: [&str; 10] = [
+const DEPENDENCIES: [&str; 11] = [
     "cargo",
     "cargo-deny",
     "clang",
     "diesel",
+    "find",
     "git",
     "mold",
     "npm",
@@ -25,7 +26,7 @@ pub(crate) fn is_binary_available(name: &str) -> bool {
 pub(crate) fn check_dependencies() -> Result<()> {
     let mut missing_dependencies = vec![];
 
-    for dependency in NEEDED_DEPENDENCIES {
+    for dependency in DEPENDENCIES {
         if !is_binary_available(dependency) {
             missing_dependencies.push(dependency);
         }

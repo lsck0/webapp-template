@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/env bash
 # This script sets up a new project based on the Webapp Template.
 
 read -rp "Project Name: " project_name
@@ -55,7 +55,6 @@ done
 
 cp ../webapp-template/README.md .
 sed -i "s/Webapp Template/$project_name/g" README.md
-#sed -i "/to use this template for a new project/d" README.md
 
 # ------------------------------------------------------------------------------
 echo "[INFO] Committing the changes."
@@ -64,7 +63,3 @@ git commit -m "Initial commit." > /dev/null
 
 # ------------------------------------------------------------------------------
 echo "[INFO] ${project_name} created at" $(pwd)
-
-# ------------------------------------------------------------------------------
-#echo "[INFO] Entering ${project_name} shell."
-#nix develop

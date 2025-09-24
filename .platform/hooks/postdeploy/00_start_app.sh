@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./cli.sh prod
+docker compose --file ./infra/prod.compose.yml up

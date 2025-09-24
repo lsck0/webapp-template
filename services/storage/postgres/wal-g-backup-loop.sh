@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/env bash
 
 set -e
 
@@ -21,6 +21,5 @@ while true; do
       echo "$(date '+%F %T') - Failed to delete old backups" >&2
     fi
 
-    # one day
-    sleep 86400
+    sleep 86400 # one day
 done
