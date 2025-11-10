@@ -14,7 +14,8 @@ RUN apt-get update && apt-get install -y \
     supervisor
 
 # get pgvector
-RUN git clone https://github.com/pgvector/pgvector.git \
+ENV PG_CONFIG=/usr/lib/postgresql/17/bin/pg_config
+RUN git clone --branch v0.8.1 https://github.com/pgvector/pgvector.git \
     && cd pgvector \
     && make \
     && make install
