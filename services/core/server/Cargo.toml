@@ -27,7 +27,6 @@ models = { path = "crates/models" }
 sample = { path = "crates/sample" }
 
 aliri_braid = "=0.4.0"
-anyhow = "=1.0.100"
 argon2 = "=0.5.3"
 axum = { version = "=0.8.4", features = ["macros", "ws"] }
 axum-extra = { version = "=0.10.1", features = ["typed-header"] }
