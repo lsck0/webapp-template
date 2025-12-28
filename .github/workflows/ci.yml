@@ -26,7 +26,7 @@ jobs:
       - name: Setup LLVM and Clang
         uses: KyleMayes/install-llvm-action@v2
         with:
-          version: "10.0"
+          version: "17.0"
 
       - name: Setup Cargo Binary Install
         uses: cargo-bins/cargo-binstall@main
@@ -39,7 +39,7 @@ jobs:
         run: |
           sudo sed -i '/^deb .* main/ s/main/main universe/' /etc/apt/sources.list
           sudo apt-get update
-          sudo apt-get install libtinfo5 mold python3-poetry
+          sudo apt-get install libtinfo6 mold python3-poetry
 
       - name: Run Checks
         run: |

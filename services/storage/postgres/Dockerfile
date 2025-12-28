@@ -4,14 +4,25 @@ FROM postgres:17.6
 RUN apt-get update && apt-get install -y \
     build-essential \
     ca-certificates \
+    cmake \
     cron \
     curl \
     git \
+    wget \
+    libbrotli-dev \
+    liblzo2-dev \
+    libsodium-dev \
     lz4 \
     postgis \
     postgresql-17-postgis-3 \
     postgresql-server-dev-17 \
     supervisor
+
+# install Go 1.25.5
+RUN wget https://go.dev/dl/go1.25.5.linux-amd64.tar.gz -O /tmp/go.tar.gz \
+    && tar -C /usr/local -xzf /tmp/go.tar.gz \
+    && rm /tmp/go.tar.gz
+ENV PATH="/usr/local/go/bin:${PATH}"
 
 # get pgvector
 ENV PG_CONFIG=/usr/lib/postgresql/17/bin/pg_config
@@ -21,13 +32,16 @@ RUN git clone --branch v0.8.1 https://github.com/pgvector/pgvector.git \
     && make install
 
 # get wal-g
-RUN curl -L https://github.com/wal-g/wal-g/releases/latest/download/wal-g-pg-ubuntu-20.04-amd64.tar.gz -o /tmp/wal-g.tar.gz \
-    && tar -xzf /tmp/wal-g.tar.gz -C /tmp \
-    && mv /tmp/wal-g-pg-ubuntu-20.04-amd64 /usr/local/bin/wal-g \
-    && rm -rf /tmp/wal-g*
+RUN git clone https://github.com/wal-g/wal-g.git /usr/local/src/wal-g \
+    && cd /usr/local/src/wal-g \
+    && make clean \
+    && make deps \
+    && make pg_build \
+    && mv main/pg/wal-g /usr/local/bin/wal-g \
+    && rm -rf /usr/local/src/wal-g
 
 # cleanup
-RUN apt-get remove -y build-essential git postgresql-server-dev-17 \
+RUN apt-get remove -y build-essential cmake git wget libbrotli-dev liblzo2-dev libsodium-dev postgresql-server-dev-17 \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
