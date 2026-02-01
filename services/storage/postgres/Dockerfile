@@ -18,18 +18,18 @@ RUN apt-get update && apt-get install -y \
     postgresql-server-dev-17 \
     supervisor
 
-# install Go 1.25.5
-RUN wget https://go.dev/dl/go1.25.5.linux-amd64.tar.gz -O /tmp/go.tar.gz \
-    && tar -C /usr/local -xzf /tmp/go.tar.gz \
-    && rm /tmp/go.tar.gz
-ENV PATH="/usr/local/go/bin:${PATH}"
-
 # get pgvector
 ENV PG_CONFIG=/usr/lib/postgresql/17/bin/pg_config
 RUN git clone --branch v0.8.1 https://github.com/pgvector/pgvector.git \
     && cd pgvector \
     && make \
     && make install
+
+# install go 1.25.5
+RUN wget https://go.dev/dl/go1.25.5.linux-amd64.tar.gz -O /tmp/go.tar.gz \
+    && tar -C /usr/local -xzf /tmp/go.tar.gz \
+    && rm /tmp/go.tar.gz
+ENV PATH="/usr/local/go/bin:${PATH}"
 
 # get wal-g
 RUN git clone https://github.com/wal-g/wal-g.git /usr/local/src/wal-g \

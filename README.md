@@ -7,5 +7,11 @@
 # Usage
 
 ```bash
-./cli.sh help
+just
+```
+
+# Trust Self-Signed Certificate
+
+```bash
+sudo trust anchor ./services/core/nginx/ssl/selfsigned.crt
 ```

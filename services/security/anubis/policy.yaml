@@ -12,13 +12,13 @@ bots:
   - name: robots-txt
     path_regex: ^/robots.txt$
     action: ALLOW
-  # - name: allow-api-requests
-  #   action: ALLOW
-  #   expression:
-  #     all:
-  #       - '"Accept" in headers'
-  #       - 'headers["Accept"] == "application/json"'
-  #       - 'path.startsWith("/api/")'
+  - name: allow-api-requests
+    action: ALLOW
+    expression:
+      all:
+        - '"Accept" in headers'
+        - 'headers["Accept"] == "application/json"'
+        - 'path.startsWith("/api/")'
   - name: all-other
     user_agent_regex: Mozilla
     action: CHALLENGE

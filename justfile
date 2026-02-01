@@ -1,0 +1,77 @@
+default:
+    @just --list
+
+# Run the project in development mode
+dev:
+    @GIT_COMMIT=$(git rev-parse HEAD) COMPOSE_BAKE=true docker compose \
+        --project-name wat \
+        --file infrastructure/dev.compose.yml \
+        up --build --force-recreate --remove-orphans --abort-on-container-exit --watch
+
+# Run the project in production mode
+prod:
+    @GIT_COMMIT=$(git rev-parse HEAD) COMPOSE_BAKE=true docker compose \
+        --project-name wat \
+        --file infrastructure/prod.compose.yml \
+        up --build --force-recreate --remove-orphans --abort-on-container-exit
+
+# Run the project in test mode
+test:
+    @GIT_COMMIT=$(git rev-parse HEAD) COMPOSE_BAKE=true docker compose \
+        --project-name wat \
+        --file infrastructure/test.compose.yml \
+        up --build --force-recreate --remove-orphans --abort-on-container-exit
+
+# Run the project in benchmark mode
+bench:
+    @GIT_COMMIT=$(git rev-parse HEAD) COMPOSE_BAKE=true docker compose \
+        --project-name wat \
+        --file infrastructure/bench.compose.yml \
+        up --build --force-recreate --remove-orphans --abort-on-container-exit
+
+# Run linters and type checks
+check:
+    cd services/core/server && cargo deny check --allow unlicensed --allow license-not-encountered --allow duplicate
+    cd services/core/server && cargo check --workspace
+    cd services/core/server && cargo clippy --workspace --all-targets --all-features -- -D warnings
+    cd services/core/client && npm i
+    cd services/core/client && npx -y tsc
+    cd services/core/client && npx -y eslint .
+    cd services/core/ai && poetry install
+    cd services/core/ai && poetry run flake8 src
+    cd services/core/ai && poetry run mypy src
+
+# Run code formatters
+fmt:
+    cd cli && cargo fmt --all
+    cd services/core/server && cargo fmt --all
+    cd services/core/client && npx -y prettier . --write > /dev/null
+    cd services/core/ai && black . 2> /dev/null
+    cd services/core/ai && isort . > /dev/null
+
+# Bundle the project into a zip file
+bundle:
+    @zip bundle.zip $(git ls-files)
+
+# Run diesel CLI
+diesel *args:
+    @cd services/core/server && diesel --database-url=postgres://admin:password@postgres.localhost/root {{args}}
+
+# Export API bindings to the client
+export-bindings:
+    @cd services/core/server && cargo test export_bindings --workspace
+    @rm -f services/core/client/src/api/bindings/*
+    @find services/core/server -type f -regex '.*/bindings/[^/]*\.ts$' -print0 | xargs -0 -I {} mv {} services/core/client/src/api/bindings
+    @find services/core/server -type d -name 'bindings' -empty -delete
+
+# Generate PWA assets
+generate-pwa-assets:
+    @cd services/core/client && npm run generate-pwa-assets
+
+# Open the server documentation
+server-docs:
+    @cd services/core/server && cargo doc --lib --open --document-private-items
+
+# Show project statistics
+stats:
+    @cloc . -vcs git --exclude-content='.lock'
