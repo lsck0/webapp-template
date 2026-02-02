@@ -29,6 +29,19 @@ bench:
         --file infrastructure/bench.compose.yml \
         up --build --force-recreate --remove-orphans --abort-on-container-exit
 
+# Wrap dev/prod/test/bench with a dashboard when using tmux
+tmux rule:
+   #!/usr/bin/env bash
+   set -euo pipefail
+
+   tmux \
+     send-keys 'just {{rule}}' C-m \; \
+     split-window -v -p 37 \; \
+     split-window -h -p 30 \; \
+     select-pane -t 2 \; send-keys 'docker stats' C-m \; \
+     select-pane -t 3 \; send-keys 'watch -d -n 1 "nc -z 127.0.0.1 80 >/dev/null && echo UP || echo DOWN"' C-m \; \
+     select-pane -t 1
+
 # Run linters and type checks
 check:
     cd services/core/server && cargo deny check --allow unlicensed --allow license-not-encountered --allow duplicate

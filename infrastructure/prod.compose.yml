@@ -190,7 +190,8 @@ services:
       - /:/rootfs:ro
       - /var/run:/var/run:ro
       - /sys:/sys:ro
-      - /var/lib/docker:/var/lib/docker:ro
+      - /var/lib/docker:/rootfs/var/lib/docker:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     env_file:
       - ./env/prod.env
 
