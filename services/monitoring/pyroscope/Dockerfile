@@ -2,7 +2,7 @@ FROM busybox:uclibc AS curl
 ADD https://github.com/moparisthebest/static-curl/releases/latest/download/curl-amd64 /curl
 RUN chmod +x /curl
 
-FROM grafana/pyroscope:weekly-f137-fac6eccc1
+FROM grafana/pyroscope:weekly-f155-97b7f968c
 
 COPY --from=curl /curl /usr/bin/curl
 

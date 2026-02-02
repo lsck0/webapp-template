@@ -1,4 +1,4 @@
-FROM grafana/promtail:3.5
+FROM grafana/promtail:3.6
 
 RUN apt-get update && apt-get install -y curl
 

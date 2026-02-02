@@ -1,4 +1,5 @@
-FROM docker.io/ollama/ollama:0.9.6
+FROM docker.io/ollama/ollama:0.15.4
+# FROM docker.io/ollama/ollama:0.15.4-rocm
 
 COPY ./start.sh /start.sh
 

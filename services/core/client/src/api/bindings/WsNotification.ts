@@ -3,8 +3,6 @@
 /**
  * WebSocket Notifications.
  */
-export type WsNotification =
-    | "UpdatePosts"
-    | {
-          Ping: { message: string; data: string };
-      };
+export type WsNotification = "UpdatePosts" | {
+  "Ping": { message: string; data: string };
+};

@@ -53,10 +53,6 @@ fmt:
 bundle:
     @zip bundle.zip $(git ls-files)
 
-# Run diesel CLI
-diesel *args:
-    @cd services/core/server && diesel --database-url=postgres://admin:password@postgres.localhost/root {{args}}
-
 # Export API bindings to the client
 export-bindings:
     @cd services/core/server && cargo test export_bindings --workspace
@@ -71,6 +67,10 @@ generate-pwa-assets:
 # Open the server documentation
 server-docs:
     @cd services/core/server && cargo doc --lib --open --document-private-items
+
+# Run diesel CLI
+diesel *args:
+    @cd services/core/server && diesel --database-url=postgres://admin:password@postgres.localhost/root {{args}}
 
 # Show project statistics
 stats:

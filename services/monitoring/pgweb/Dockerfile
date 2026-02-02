@@ -1,4 +1,4 @@
-FROM sosedoff/pgweb:0.16.2
+FROM sosedoff/pgweb:0.17.0
 
 USER root
 RUN apt-get update && apt-get install -y  wget

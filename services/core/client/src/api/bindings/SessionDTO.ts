@@ -3,16 +3,16 @@ import type { SessionInvalidationReason } from "./SessionInvalidationReason";
 import type { UserDTO } from "./UserDTO";
 
 export type SessionDTO = {
-    id: string;
-    user: UserDTO;
-    session_token: string;
-    access_token: string;
-    user_agent: string;
-    ip_address: string;
-    valid: boolean;
-    invalidated_at: string | null;
-    invalidated_reason: SessionInvalidationReason | null;
-    last_used: string;
-    updated_at: string;
-    created_at: string;
+  id: string;
+  user: UserDTO;
+  session_token: string;
+  access_token: string;
+  user_agent: string;
+  ip_address: string;
+  valid: boolean;
+  invalidated_at: string | null;
+  invalidated_reason: SessionInvalidationReason | null;
+  last_used: string;
+  updated_at: string;
+  created_at: string;
 };

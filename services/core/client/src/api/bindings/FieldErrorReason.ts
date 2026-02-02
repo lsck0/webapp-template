@@ -4,8 +4,8 @@
  * Reasons for why fields are invalid.
  */
 export type FieldErrorReason =
-    | { InvalidRange: { min: number; max: number } }
-    | "InvalidCredentials"
-    | "ExpiredInviteToken"
-    | "InvalidInviteToken"
-    | { UserAlreadyExists: string };
+  | { "InvalidRange": { min: number; max: number } }
+  | "InvalidCredentials"
+  | "ExpiredInviteToken"
+  | "InvalidInviteToken"
+  | { "UserAlreadyExists": string };
