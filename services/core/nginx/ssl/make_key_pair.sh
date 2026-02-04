@@ -1,7 +1,7 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 
-# ECDSA with secp521r1 curve
-openssl ecparam -name secp521r1 -genkey -noout -out selfsigned.key
+# ECDSA with prime256v1 curve (P-256) for better browser compatibility
+openssl ecparam -name prime256v1 -genkey -noout -out selfsigned.key
 
 # create certificate
 openssl req -x509 -new -nodes -days 365 \

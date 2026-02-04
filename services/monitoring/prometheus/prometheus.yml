@@ -4,21 +4,15 @@ scrape_configs:
     static_configs:
       - targets: ["anubis:9090"]
 
-  - job_name: nginx
-    scrape_interval: 15s
-    static_configs:
-      - targets: ["nginx-metrics:9113"]
-
-  - job_name: server
-    scrape_interval: 15s
-    metrics_path: /api/metrics
-    static_configs:
-      - targets: ["server"]
-
   - job_name: docker
     scrape_interval: 15s
     static_configs:
       - targets: ["cadvisor:8080"]
+
+  - job_name: loki
+    scrape_interval: 15s
+    static_configs:
+      - targets: ["loki"]
 
   - job_name: minio
     scrape_interval: 15s
@@ -27,7 +21,23 @@ scrape_configs:
     static_configs:
       - targets: ["minio:9000"]
 
-  - job_name: loki
+  - job_name: nginx
     scrape_interval: 15s
     static_configs:
-      - targets: ["loki"]
+      - targets: ["nginx-metrics:9113"]
+
+  - job_name: postgres
+    scrape_interval: 15s
+    static_configs:
+      - targets: ["postgres-metrics:9187"]
+
+  - job_name: redis
+    scrape_interval: 15s
+    static_configs:
+      - targets: ["redis-metrics:9121"]
+
+  - job_name: server
+    scrape_interval: 15s
+    metrics_path: /api/metrics
+    static_configs:
+      - targets: ["server"]

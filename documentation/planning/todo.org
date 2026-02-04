@@ -1,15 +1,12 @@
 * TODO
 
-- [ ] test postgres restore, make script to do so (locally running)
-- [ ] postgres restore script
-- [ ] fix minio webui websocket issue with nginx
-- [ ] minio / postgres / redis dashboard in grafana?
 - [ ] server auth/crypto rework
 - [ ] server testing framework
 - [ ] client api/auth implementation
 - [ ] prod, testing and bench docker configurations
 - [ ] security checks against the running system?
 - [ ] offsite minio backup to S3
+- [ ] test database backups
 - [ ] protect monitoring endpoints (firewall, ip whitelist, not just auth)
 - [ ] docker swarm deployment
     - [ ] swarm config files

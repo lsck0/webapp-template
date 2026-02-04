@@ -163,6 +163,10 @@ services:
         condition: service_healthy
       pyroscope:
         condition: service_healthy
+      postgres-metrics:
+        condition: service_healthy
+      redis-metrics:
+        condition: service_started
 
   loki:
     container_name: wat-dev-loki
@@ -190,6 +194,26 @@ services:
       dockerfile: Dockerfile
     env_file:
       - ./env/dev.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres-metrics:
+    container_name: wat-dev-postgres-metrics
+    image: prometheuscommunity/postgres-exporter:v0.17.1
+    env_file:
+      - ./env/dev.env
+    environment:
+      DATA_SOURCE_NAME: postgresql://root:1UdEQQTMBGCCWxvY2FsaG9zdIcEfwAAATAdBgNVHQ4EFgQUgGAHp2OojO06lrYu@postgres:5432/root?sslmode=disable
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget --spider -q http://localhost:9187/metrics || exit 1",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
     depends_on:
       postgres:
         condition: service_healthy
@@ -223,6 +247,26 @@ services:
       dockerfile: Dockerfile
     env_file:
       - ./env/dev.env
+
+  redis-metrics:
+    container_name: wat-dev-redis-metrics
+    image: oliver006/redis_exporter:v1.67.0
+    env_file:
+      - ./env/dev.env
+    environment:
+      REDIS_ADDR: redis:6379
+    # healthcheck:
+    #   test:
+    #     [
+    #       "CMD-SHELL",
+    #       "wget --spider -q http://localhost:9121/metrics || exit 1",
+    #     ]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 5
+    depends_on:
+      redis:
+        condition: service_healthy
 
   # --------------------------------------------------------------------------
   # SECURITY

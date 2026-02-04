@@ -36,8 +36,8 @@ tmux rule:
 
    tmux \
      send-keys 'just {{rule}}' C-m \; \
-     split-window -v -p 37 \; \
-     split-window -h -p 30 \; \
+     split-window -v -p 40 \; \
+     split-window -h -p 33 \; \
      select-pane -t 2 \; send-keys 'docker stats' C-m \; \
      select-pane -t 3 \; send-keys 'watch -d -n 1 "nc -z 127.0.0.1 80 >/dev/null && echo UP || echo DOWN"' C-m \; \
      select-pane -t 1

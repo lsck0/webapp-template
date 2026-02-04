@@ -28,6 +28,6 @@ async fn main() {
     .await
     .expect("Failed to run server.");
 
-    let agent_ready = agent_running.stop().expect("Failed to stop agent.");
+    let agent_ready = agent_running.stop().expect("Failed to Pyroscope stop agent.");
     agent_ready.shutdown();
 }

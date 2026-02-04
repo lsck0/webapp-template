@@ -4,7 +4,7 @@
 
 pub mod dtos;
 pub mod endpoints;
-pub(crate) mod metrics;
+pub mod metrics;
 pub(crate) mod middlewares;
 pub(crate) mod tasks;
 
@@ -12,7 +12,7 @@ use axum::{Router, routing::get};
 use axum_prometheus::PrometheusMetricLayer;
 use middlewares::{add_tracing_layer, initialize_tracing};
 use models::{DbInitFlags, initialize_database};
-use openssl_probe::init_openssl_env_vars;
+use openssl_probe::try_init_openssl_env_vars;
 use tasks::initialize_cron_tasks;
 use tower_http::cors::{Any, CorsLayer};
 use utoipa::{
@@ -38,7 +38,9 @@ impl Modify for SecurityAddon {
 
 pub async fn app() -> Router {
     unsafe {
-        init_openssl_env_vars();
+        if !try_init_openssl_env_vars() {
+            panic!("Failed to initialize OpenSSL environment variables");
+        }
     }
 
     initialize_tracing();
@@ -49,7 +51,7 @@ pub async fn app() -> Router {
 
     // /api/ -> API router
     // /api/docs -> API docs
-    // /api/metrics -> Prometheus metrics
+    // /api/metrics -> Prometheus metrics (outside access blocked by nginx)
     let mut app: Router = Router::new()
         .merge(endpoints::endpoint_router())
         .route("/api/metrics", get(|| async move { metric_handle.render() }))

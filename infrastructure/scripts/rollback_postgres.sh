@@ -1,35 +1,26 @@
-#!/bin/env bash
+#!/usr/bin/env bash
+#
+# DEPRECATED: This script has been replaced by restore_postgres.sh
+#
+# Please use one of the following scripts instead:
+#
+#   - restore_postgres.sh     - Restore postgres from a backup
+#   - list_postgres_backups.sh - List available backups
+#   - test_postgres_restore.sh - Test the backup/restore functionality
+#
+# For more information, see the infrastructure/scripts directory.
 
 set -e
 
-echo "Container Name: "
-read POSTGRES_CONTAINER_NAME
-
-echo "ARE U SURE?"
-read -p "Type 'y' to continue: " confirm
-if [ "$confirm" != "y" ]; then
-    echo "Aborting rollback."
-    exit 1
-fi
-
-echo "ARE U REALLY SURE?"
-read -p "Type 'y' to continue: " confirm
-if [ "$confirm" != "y" ]; then
-    echo "Aborting rollback."
-    exit 1
-fi
-
-echo "Configure the Script first!" && exit 1
-
-# STEP 1: Load environment variables for the correct environment
-export $(grep -v '^#' ../../../infra/env/dev.env | xargs)
-POSTGRES_CONTAINER_NAME="wat-dev-postgres"
-
-# STEP 2: Take down the database
-docker compose stop $POSTGRES_CONTAINER_NAME
-
-# STEP 3: Rollback the database to a previous state
-docker compose run --rm $POSTGRES_CONTAINER_NAME \
-  wal-g backup-fetch /var/lib/postgresql/data LATEST # <- PICK THE CORRECT BACKUP HERE wal-g backup-fetch /var/lib/postgresql/data <BACKUP_NAME>
-
-# STEP 4: Use WAL log for point-in-time recovery (PITR)
+echo "This script is deprecated."
+echo ""
+echo "Please use restore_postgres.sh instead:"
+echo "  ./restore_postgres.sh [backup_name]"
+echo ""
+echo "To list available backups:"
+echo "  ./list_postgres_backups.sh"
+echo ""
+echo "To test backup/restore functionality:"
+echo "  ./test_postgres_restore.sh"
+echo ""
+exit 1

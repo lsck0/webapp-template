@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 # This script sets up a new project based on the Webapp Template.
 
 read -rp "Project Name: " project_name
