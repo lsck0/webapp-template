@@ -15,3 +15,6 @@ allow = [
     "Unicode-DFS-2016",
     "Zlib",
 ]
+
+[licenses.private]
+ignore = true

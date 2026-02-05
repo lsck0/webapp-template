@@ -2,10 +2,10 @@
 import type { UserDTO } from "./UserDTO";
 
 export type PostDTO = {
-  id: string;
-  title: string;
-  content: string;
-  author: UserDTO;
-  updated_at: string;
-  created_at: string;
+    id: string;
+    title: string;
+    content: string;
+    author: UserDTO;
+    updated_at: string;
+    created_at: string;
 };

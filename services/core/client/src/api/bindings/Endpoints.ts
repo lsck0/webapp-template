@@ -4,18 +4,18 @@
  * API Endpoints.
  */
 export type Endpoints =
-  | "/api/health"
-  | "/api/ws"
-  | "/api/auth/invite"
-  | "/api/auth/register"
-  | "/api/auth/login"
-  | "/api/auth/logout"
-  | "/api/auth/refresh"
-  | "/api/auth/password-change"
-  | "/api/auth/otp/enable"
-  | "/api/auth/otp/disable"
-  | "/api/auth/otp/validate"
-  | "/api/auth/otp/backup-codes"
-  | "/api/user"
-  | "/api/session"
-  | "/api/post";
+    | "/api/health"
+    | "/api/ws"
+    | "/api/auth/invite"
+    | "/api/auth/register"
+    | "/api/auth/login"
+    | "/api/auth/logout"
+    | "/api/auth/refresh"
+    | "/api/auth/password-change"
+    | "/api/auth/otp/enable"
+    | "/api/auth/otp/disable"
+    | "/api/auth/otp/validate"
+    | "/api/auth/otp/backup-codes"
+    | "/api/user"
+    | "/api/session"
+    | "/api/post";

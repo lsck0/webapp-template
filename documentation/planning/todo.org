@@ -10,7 +10,7 @@
 - [ ] security checks against the running system?
 - [ ] offsite minio backup to S3
 - [ ] test database backups
-- [ ] protect monitoring endpoints (firewall, ip whitelist, not just auth)
+- [ ] protect monitoring endpoints (firewall, ip whitelist, not just auth of the dashboards)
 - [ ] docker swarm deployment
     - [ ] swarm config files
     - [ ] swarm deploy script

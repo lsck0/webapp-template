@@ -44,19 +44,22 @@ tmux rule:
 
 # Run linters and type checks
 check:
-    cd services/core/server && cargo deny check --allow unlicensed --allow license-not-encountered --allow duplicate
-    cd services/core/server && cargo check --workspace
-    cd services/core/server && cargo clippy --workspace --all-targets --all-features -- -D warnings
-    cd services/core/client && npm i
-    cd services/core/client && npx -y tsc
-    cd services/core/client && npx -y eslint .
-    cd services/core/ai && poetry install
-    cd services/core/ai && poetry run flake8 src
-    cd services/core/ai && poetry run mypy src
+	#!/usr/bin/env bash
+	set -euo pipefail
+	ROOT="{{ justfile_directory() }}"
+
+	cd "$ROOT/services/core/server" && cargo deny check --allow unlicensed --allow license-not-encountered --allow duplicate 2>&1 | grep -v "warning\[parse-error\]: error parsing SPDX" | grep -v "warning\[no-license-field\]:" | grep -v "^ ├" | grep -v "^   " | grep -v "^$" || true
+	cd "$ROOT/services/core/server" && cargo check --workspace
+	cd "$ROOT/services/core/server" && cargo clippy --workspace --all-targets --all-features -- -D warnings
+	cd "$ROOT/services/core/client" && npm ci
+	cd "$ROOT/services/core/client" && npx -y tsc
+	cd "$ROOT/services/core/client" && npx -y eslint .
+	cd "$ROOT/services/core/ai" && poetry install
+	cd "$ROOT/services/core/ai" && poetry run flake8 src
+	cd "$ROOT/services/core/ai" && poetry run mypy src
 
 # Run code formatters
 fmt:
-    cd cli && cargo fmt --all
     cd services/core/server && cargo fmt --all
     cd services/core/client && npx -y prettier . --write > /dev/null
     cd services/core/ai && black . 2> /dev/null

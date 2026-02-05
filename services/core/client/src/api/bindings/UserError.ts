@@ -4,7 +4,4 @@ import type { FieldError } from "./FieldError";
 /**
  * User errors.
  */
-export type UserError =
-  | { "BodyError": Array<FieldError> }
-  | "TooManyOpenSessions"
-  | { "Generic": string };
+export type UserError = { BodyError: Array<FieldError> } | "TooManyOpenSessions" | { Generic: string };

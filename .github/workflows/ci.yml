@@ -28,31 +28,16 @@ jobs:
         with:
           version: "17.0"
 
-      - name: Setup Cargo Binary Install
-        uses: cargo-bins/cargo-binstall@main
-
-      - name: Install Cargo Dependencies
-        run: |
-          cargo binstall cargo-deny diesel_cli --no-confirm --disable-telemetry
-
-      - name: Install Other Dependencies
+      - name: Install Distro Dependencies
         run: |
           sudo sed -i '/^deb .* main/ s/main/main universe/' /etc/apt/sources.list
           sudo apt-get update
-          sudo apt-get install libtinfo6 mold python3-poetry
+          sudo apt-get install -y libtinfo6 mold python3-poetry just
+
+      - name: Install Cargo Dependencies
+        run: |
+          cargo install cargo-deny
 
       - name: Run Checks
         run: |
-          ./cli.sh check
-
-      - name: Format Codebase
-        run: |
-          ./cli.sh format
-
-      - name: Commit Formatting
-        run: |
-          git config --global user.name 'CI'
-          git config --global user.email 'ci@github.com'
-          git diff-index --quiet HEAD || git commit -am "ci: format codebase"
-          git pull --rebase
-          git push
+          just check
