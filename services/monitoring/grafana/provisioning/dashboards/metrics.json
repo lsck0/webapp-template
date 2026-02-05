@@ -244,6 +244,189 @@
         },
         {
             "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": 0
+                            }
+                        ]
+                    },
+                    "unit": "short"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 4,
+                "w": 8,
+                "x": 0,
+                "y": 5
+            },
+            "id": 51,
+            "options": {
+                "colorMode": "background",
+                "graphMode": "none",
+                "justifyMode": "center",
+                "orientation": "auto",
+                "percentChangeColorMode": "standard",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "showPercentChange": false,
+                "textMode": "auto",
+                "wideLayout": true
+            },
+            "pluginVersion": "12.4.0-21419697389",
+            "targets": [
+                {
+                    "editorMode": "code",
+                    "expr": "count(pg_stat_activity{state=\"active\"}) or vector(0)",
+                    "legendFormat": "",
+                    "range": true,
+                    "refId": "A"
+                }
+            ],
+            "title": "Open Sessions",
+            "type": "stat"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": 0
+                            }
+                        ]
+                    },
+                    "unit": "short"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 4,
+                "w": 8,
+                "x": 8,
+                "y": 5
+            },
+            "id": 53,
+            "options": {
+                "colorMode": "background",
+                "graphMode": "none",
+                "justifyMode": "center",
+                "orientation": "auto",
+                "percentChangeColorMode": "standard",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "showPercentChange": false,
+                "textMode": "auto",
+                "wideLayout": true
+            },
+            "pluginVersion": "12.4.0-21419697389",
+            "targets": [
+                {
+                    "editorMode": "code",
+                    "expr": "sum(increase(axum_http_requests_total{endpoint=\"/api/auth/login\",status=\"200\"}[$__interval])) or vector(0)",
+                    "legendFormat": "",
+                    "range": true,
+                    "refId": "A"
+                }
+            ],
+            "title": "Logins",
+            "type": "stat"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": 0
+                            }
+                        ]
+                    },
+                    "unit": "short"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 4,
+                "w": 8,
+                "x": 16,
+                "y": 5
+            },
+            "id": 52,
+            "options": {
+                "colorMode": "background",
+                "graphMode": "none",
+                "justifyMode": "center",
+                "orientation": "auto",
+                "percentChangeColorMode": "standard",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "showPercentChange": false,
+                "textMode": "auto",
+                "wideLayout": true
+            },
+            "pluginVersion": "12.4.0-21419697389",
+            "targets": [
+                {
+                    "editorMode": "code",
+                    "expr": "sum(increase(axum_http_requests_total{endpoint=\"/api/auth/register\",status=\"200\"}[$__interval])) or vector(0)",
+                    "legendFormat": "",
+                    "range": true,
+                    "refId": "A"
+                }
+            ],
+            "title": "Registrations",
+            "type": "stat"
+        },
+        {
+            "datasource": {
                 "type": "loki",
                 "uid": "loki"
             },
@@ -280,7 +463,7 @@
                 "h": 8,
                 "w": 24,
                 "x": 0,
-                "y": 5
+                "y": 9
             },
             "id": 5,
             "interval": "1h",
@@ -433,7 +616,7 @@
                 "h": 8,
                 "w": 12,
                 "x": 0,
-                "y": 13
+                "y": 17
             },
             "id": 6,
             "interval": "1h",
@@ -534,7 +717,7 @@
                 "h": 8,
                 "w": 12,
                 "x": 12,
-                "y": 13
+                "y": 17
             },
             "id": 7,
             "interval": "1d",
@@ -632,7 +815,7 @@
                 "h": 10,
                 "w": 12,
                 "x": 0,
-                "y": 21
+                "y": 25
             },
             "id": 8,
             "interval": "1h",
@@ -756,7 +939,7 @@
                 "h": 10,
                 "w": 12,
                 "x": 12,
-                "y": 21
+                "y": 25
             },
             "id": 9,
             "interval": "1h",
@@ -841,7 +1024,7 @@
                 "h": 1,
                 "w": 24,
                 "x": 0,
-                "y": 31
+                "y": 35
             },
             "id": 10,
             "panels": [],
@@ -877,7 +1060,7 @@
                 "h": 9,
                 "w": 12,
                 "x": 0,
-                "y": 32
+                "y": 36
             },
             "id": 11,
             "interval": "30s",
@@ -944,7 +1127,7 @@
                 "h": 5,
                 "w": 6,
                 "x": 12,
-                "y": 32
+                "y": 36
             },
             "id": 12,
             "interval": "30s",
@@ -1010,7 +1193,7 @@
                 "h": 5,
                 "w": 6,
                 "x": 18,
-                "y": 32
+                "y": 36
             },
             "id": 13,
             "interval": "30s",
@@ -1035,7 +1218,7 @@
             "targets": [
                 {
                     "editorMode": "code",
-                    "expr": "sum(axum_http_requests_total{endpoint=~\"/api/.*\"})",
+                    "expr": "sum by(host) (count_over_time(axum_http_requests_total{endpoint=~\"/api/.*\"} [$__interval]))",
                     "legendFormat": "__auto",
                     "range": true,
                     "refId": "A"
@@ -1073,7 +1256,7 @@
                 "h": 4,
                 "w": 6,
                 "x": 12,
-                "y": 37
+                "y": 41
             },
             "id": 14,
             "interval": "30s",
@@ -1140,7 +1323,7 @@
                 "h": 4,
                 "w": 6,
                 "x": 18,
-                "y": 37
+                "y": 41
             },
             "id": 15,
             "interval": "30s",
@@ -1240,7 +1423,7 @@
                 "h": 11,
                 "w": 12,
                 "x": 0,
-                "y": 41
+                "y": 45
             },
             "id": 16,
             "options": {
@@ -1340,7 +1523,7 @@
                 "h": 11,
                 "w": 12,
                 "x": 12,
-                "y": 41
+                "y": 45
             },
             "id": 17,
             "options": {
@@ -1428,7 +1611,7 @@
                 "h": 1,
                 "w": 24,
                 "x": 0,
-                "y": 52
+                "y": 56
             },
             "id": 18,
             "panels": [],
@@ -1510,7 +1693,7 @@
                 "h": 11,
                 "w": 12,
                 "x": 0,
-                "y": 53
+                "y": 57
             },
             "id": 19,
             "interval": "5s",
@@ -1625,7 +1808,7 @@
                 "h": 11,
                 "w": 12,
                 "x": 12,
-                "y": 53
+                "y": 57
             },
             "id": 20,
             "interval": "5s",
@@ -1729,7 +1912,7 @@
                 "h": 11,
                 "w": 8,
                 "x": 0,
-                "y": 64
+                "y": 68
             },
             "id": 21,
             "interval": "5s",
@@ -1840,7 +2023,7 @@
                 "h": 11,
                 "w": 8,
                 "x": 8,
-                "y": 64
+                "y": 68
             },
             "id": 22,
             "interval": "5s",
@@ -1942,7 +2125,7 @@
                 "h": 11,
                 "w": 8,
                 "x": 16,
-                "y": 64
+                "y": 68
             },
             "id": 23,
             "interval": "5s",
@@ -1984,11 +2167,11 @@
                 "h": 1,
                 "w": 24,
                 "x": 0,
-                "y": 75
+                "y": 79
             },
             "id": 24,
             "panels": [],
-            "title": "PostgreSQL Metrics",
+            "title": "Database Metrics",
             "type": "row"
         },
         {
@@ -2053,9 +2236,9 @@
                 "h": 11,
                 "w": 12,
                 "x": 0,
-                "y": 76
+                "y": 80
             },
-            "id": 28,
+            "id": 25,
             "options": {
                 "legend": {
                     "calcs": [],
@@ -2086,7 +2269,7 @@
                     "refId": "B"
                 }
             ],
-            "title": "Transactions",
+            "title": "Postgres Transactions",
             "type": "timeseries"
         },
         {
@@ -2151,9 +2334,9 @@
                 "h": 11,
                 "w": 12,
                 "x": 12,
-                "y": 76
+                "y": 80
             },
-            "id": 29,
+            "id": 26,
             "options": {
                 "legend": {
                     "calcs": [],
@@ -2177,21 +2360,8 @@
                     "refId": "A"
                 }
             ],
-            "title": "Database Size",
+            "title": "Postgres Size",
             "type": "timeseries"
-        },
-        {
-            "collapsed": false,
-            "gridPos": {
-                "h": 1,
-                "w": 24,
-                "x": 0,
-                "y": 87
-            },
-            "id": 30,
-            "panels": [],
-            "title": "Redis Metrics",
-            "type": "row"
         },
         {
             "datasource": {
@@ -2255,9 +2425,9 @@
                 "h": 11,
                 "w": 12,
                 "x": 0,
-                "y": 88
+                "y": 91
             },
-            "id": 35,
+            "id": 28,
             "options": {
                 "legend": {
                     "calcs": [],
@@ -2281,7 +2451,7 @@
                     "refId": "A"
                 }
             ],
-            "title": "Command Rate",
+            "title": "Redis Activity",
             "type": "timeseries"
         },
         {
@@ -2346,9 +2516,9 @@
                 "h": 11,
                 "w": 12,
                 "x": 12,
-                "y": 88
+                "y": 91
             },
-            "id": 36,
+            "id": 29,
             "options": {
                 "legend": {
                     "calcs": [],
@@ -2379,21 +2549,8 @@
                     "refId": "B"
                 }
             ],
-            "title": "Memory Usage Over Time",
+            "title": "Redis Size (in Memory)",
             "type": "timeseries"
-        },
-        {
-            "collapsed": false,
-            "gridPos": {
-                "h": 1,
-                "w": 24,
-                "x": 0,
-                "y": 99
-            },
-            "id": 37,
-            "panels": [],
-            "title": "MinIO Metrics",
-            "type": "row"
         },
         {
             "datasource": {
@@ -2457,9 +2614,9 @@
                 "h": 11,
                 "w": 12,
                 "x": 0,
-                "y": 100
+                "y": 102
             },
-            "id": 43,
+            "id": 31,
             "options": {
                 "legend": {
                     "calcs": [],
@@ -2483,196 +2640,7 @@
                     "refId": "A"
                 }
             ],
-            "title": "S3 Request Rate",
-            "type": "timeseries"
-        },
-        {
-            "datasource": {
-                "type": "prometheus",
-                "uid": "prometheus"
-            },
-            "fieldConfig": {
-                "defaults": {
-                    "color": {
-                        "mode": "palette-classic"
-                    },
-                    "custom": {
-                        "axisBorderShow": false,
-                        "axisCenteredZero": false,
-                        "axisColorMode": "text",
-                        "axisLabel": "",
-                        "axisPlacement": "auto",
-                        "barAlignment": 0,
-                        "barWidthFactor": 0.6,
-                        "drawStyle": "line",
-                        "fillOpacity": 10,
-                        "gradientMode": "none",
-                        "hideFrom": {
-                            "legend": false,
-                            "tooltip": false,
-                            "viz": false
-                        },
-                        "insertNulls": false,
-                        "lineInterpolation": "linear",
-                        "lineWidth": 1,
-                        "pointSize": 5,
-                        "scaleDistribution": {
-                            "type": "linear"
-                        },
-                        "showPoints": "never",
-                        "showValues": false,
-                        "spanNulls": false,
-                        "stacking": {
-                            "group": "A",
-                            "mode": "none"
-                        },
-                        "thresholdsStyle": {
-                            "mode": "off"
-                        }
-                    },
-                    "mappings": [],
-                    "thresholds": {
-                        "mode": "absolute",
-                        "steps": [
-                            {
-                                "color": "green",
-                                "value": 0
-                            }
-                        ]
-                    },
-                    "unit": "Bps"
-                },
-                "overrides": []
-            },
-            "gridPos": {
-                "h": 11,
-                "w": 12,
-                "x": 12,
-                "y": 100
-            },
-            "id": 44,
-            "options": {
-                "legend": {
-                    "calcs": [],
-                    "displayMode": "list",
-                    "placement": "bottom",
-                    "showLegend": true
-                },
-                "tooltip": {
-                    "hideZeros": false,
-                    "mode": "multi",
-                    "sort": "none"
-                }
-            },
-            "pluginVersion": "12.4.0-21419697389",
-            "targets": [
-                {
-                    "editorMode": "code",
-                    "expr": "rate(minio_s3_traffic_sent_bytes[1m])",
-                    "legendFormat": "Bytes Sent",
-                    "range": true,
-                    "refId": "A"
-                },
-                {
-                    "editorMode": "code",
-                    "expr": "rate(minio_s3_traffic_received_bytes[1m])",
-                    "legendFormat": "Bytes Received",
-                    "range": true,
-                    "refId": "B"
-                }
-            ],
-            "title": "Network Traffic",
-            "type": "timeseries"
-        },
-        {
-            "datasource": {
-                "type": "prometheus",
-                "uid": "prometheus"
-            },
-            "fieldConfig": {
-                "defaults": {
-                    "color": {
-                        "mode": "palette-classic"
-                    },
-                    "custom": {
-                        "axisBorderShow": false,
-                        "axisCenteredZero": false,
-                        "axisColorMode": "text",
-                        "axisLabel": "",
-                        "axisPlacement": "auto",
-                        "barAlignment": 0,
-                        "barWidthFactor": 0.6,
-                        "drawStyle": "line",
-                        "fillOpacity": 10,
-                        "gradientMode": "none",
-                        "hideFrom": {
-                            "legend": false,
-                            "tooltip": false,
-                            "viz": false
-                        },
-                        "insertNulls": false,
-                        "lineInterpolation": "linear",
-                        "lineWidth": 1,
-                        "pointSize": 5,
-                        "scaleDistribution": {
-                            "type": "linear"
-                        },
-                        "showPoints": "never",
-                        "showValues": false,
-                        "spanNulls": false,
-                        "stacking": {
-                            "group": "A",
-                            "mode": "none"
-                        },
-                        "thresholdsStyle": {
-                            "mode": "off"
-                        }
-                    },
-                    "mappings": [],
-                    "thresholds": {
-                        "mode": "absolute",
-                        "steps": [
-                            {
-                                "color": "green",
-                                "value": 0
-                            }
-                        ]
-                    },
-                    "unit": "percentunit"
-                },
-                "overrides": []
-            },
-            "gridPos": {
-                "h": 11,
-                "w": 12,
-                "x": 0,
-                "y": 111
-            },
-            "id": 48,
-            "options": {
-                "legend": {
-                    "calcs": [],
-                    "displayMode": "list",
-                    "placement": "bottom",
-                    "showLegend": true
-                },
-                "tooltip": {
-                    "hideZeros": false,
-                    "mode": "multi",
-                    "sort": "none"
-                }
-            },
-            "pluginVersion": "12.4.0-21419697389",
-            "targets": [
-                {
-                    "editorMode": "code",
-                    "expr": "rate(minio_s3_requests_errors_total[1m]) / rate(minio_s3_requests_total[1m])",
-                    "legendFormat": "Error Rate - {{api}}",
-                    "range": true,
-                    "refId": "A"
-                }
-            ],
-            "title": "Error Rate",
+            "title": "MinIO Activity",
             "type": "timeseries"
         },
         {
@@ -2681,9 +2649,9 @@
                 "h": 1,
                 "w": 24,
                 "x": 0,
-                "y": 122
+                "y": 113
             },
-            "id": 49,
+            "id": 64,
             "panels": [],
             "title": "System Metrics",
             "type": "row"
@@ -2723,9 +2691,9 @@
                 "h": 6,
                 "w": 6,
                 "x": 0,
-                "y": 123
+                "y": 114
             },
-            "id": 50,
+            "id": 65,
             "options": {
                 "minVizHeight": 75,
                 "minVizWidth": 75,
@@ -2811,9 +2779,9 @@
                 "h": 6,
                 "w": 6,
                 "x": 6,
-                "y": 123
+                "y": 114
             },
-            "id": 51,
+            "id": 66,
             "options": {
                 "minVizHeight": 75,
                 "minVizWidth": 75,
@@ -2874,9 +2842,9 @@
                 "h": 6,
                 "w": 12,
                 "x": 12,
-                "y": 123
+                "y": 114
             },
-            "id": 52,
+            "id": 67,
             "options": {
                 "colorMode": "value",
                 "graphMode": "area",
@@ -2985,9 +2953,9 @@
                 "h": 11,
                 "w": 12,
                 "x": 0,
-                "y": 129
+                "y": 120
             },
-            "id": 53,
+            "id": 68,
             "interval": "5s",
             "options": {
                 "legend": {
@@ -3163,9 +3131,9 @@
                 "h": 11,
                 "w": 12,
                 "x": 12,
-                "y": 129
+                "y": 120
             },
-            "id": 54,
+            "id": 69,
             "interval": "5s",
             "options": {
                 "legend": {
@@ -3278,14 +3246,14 @@
         }
     ],
     "preload": false,
-    "refresh": "10s",
+    "refresh": "5s",
     "schemaVersion": 42,
     "tags": [],
     "templating": {
         "list": []
     },
     "time": {
-        "from": "now-15m",
+        "from": "now-5m",
         "to": "now"
     },
     "timepicker": {
@@ -3300,6 +3268,6 @@
     "timezone": "browser",
     "title": "Metrics",
     "uid": "7wcZ94dnz",
-    "version": 3,
+    "version": 17,
     "weekStart": ""
 }

@@ -1,5 +1,8 @@
 * TODO
 
+- [ ] server code review
+- [ ] dto validation
+- [ ] analytics endpoint -> client crashes on grafana dashboard
 - [ ] server auth/crypto rework
 - [ ] server testing framework
 - [ ] client api/auth implementation
