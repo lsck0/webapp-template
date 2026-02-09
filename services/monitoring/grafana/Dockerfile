@@ -1,6 +1,6 @@
 FROM grafana/grafana:12.4.0-21419697389
 
-ENV GF_PLUGINS_PREINSTALL=https://storage.googleapis.com/integration-artifacts/grafana-lokiexplore-app/grafana-lokiexplore-app-latest.zip;grafana-lokiexplore-app;grafana-investigations-app;grafana-pyroscope-app
+ENV GF_PLUGINS_PREINSTALL=grafana-investigations-app;grafana-lokiexplore-app;grafana-pyroscope-app;grafana-tempo-datasource
 
 COPY ./provisioning /etc/grafana/provisioning
 

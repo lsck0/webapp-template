@@ -106,6 +106,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      tempo:
+        condition: service_healthy
     develop:
       watch:
         - action: rebuild
@@ -163,6 +165,8 @@ services:
         condition: service_healthy
       pyroscope:
         condition: service_healthy
+      tempo:
+        condition: service_healthy
       postgres-metrics:
         condition: service_healthy
       redis-metrics:
@@ -204,8 +208,6 @@ services:
       context: ../services/monitoring/postgres-metrics
     env_file:
       - ./env/dev.env
-    environment:
-      DATA_SOURCE_NAME: postgresql://root:1UdEQQTMBGCCWxvY2FsaG9zdIcEfwAAATAdBgNVHQ4EFgQUgGAHp2OojO06lrYu@postgres:5432/root?sslmode=disable
     depends_on:
       postgres:
         condition: service_healthy
@@ -237,6 +239,16 @@ services:
     build:
       context: ../services/monitoring/pyroscope
       dockerfile: Dockerfile
+    env_file:
+      - ./env/dev.env
+
+  tempo:
+    container_name: wat-dev-tempo
+    build:
+      context: ../services/monitoring/tempo
+      dockerfile: Dockerfile
+    volumes:
+      - dev_tempo_data:/var/tempo
     env_file:
       - ./env/dev.env
 
@@ -315,3 +327,4 @@ volumes:
   dev_ollama_data: {}
   dev_postgres_data: {}
   dev_redis_data: {}
+  dev_tempo_data: {}

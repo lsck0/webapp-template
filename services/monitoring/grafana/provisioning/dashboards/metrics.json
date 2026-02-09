@@ -3260,7 +3260,7 @@
             "targets": [
                 {
                     "editorMode": "code",
-                    "expr": "sum(rate(container_network_receive_bytes_total{name=~\".*nginx\"}[1m]))",
+                    "expr": "sum(rate(container_network_receive_bytes_total{name=~\"wat-dev-.*\",name!=\"\"}[1m]))",
                     "legendFormat": "Input",
                     "range": true,
                     "refId": "A"
@@ -3271,7 +3271,7 @@
                         "uid": "prometheus"
                     },
                     "editorMode": "code",
-                    "expr": "sum(rate(container_network_transmit_bytes_total{name=~\".*nginx\"}[1m]))",
+                    "expr": "sum(rate(container_network_transmit_bytes_total{name=~\"wat-dev-.*\",name!=\"\"}[1m]))",
                     "instant": false,
                     "legendFormat": "Output",
                     "range": true,
@@ -3280,6 +3280,116 @@
             ],
             "title": "Network IO",
             "type": "stat"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "axisBorderShow": false,
+                        "axisCenteredZero": false,
+                        "axisColorMode": "text",
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "barAlignment": 0,
+                        "barWidthFactor": 0.6,
+                        "drawStyle": "line",
+                        "fillOpacity": 5,
+                        "gradientMode": "opacity",
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "insertNulls": false,
+                        "lineInterpolation": "linear",
+                        "lineStyle": {
+                            "fill": "solid"
+                        },
+                        "lineWidth": 2,
+                        "pointSize": 5,
+                        "scaleDistribution": {
+                            "type": "linear"
+                        },
+                        "showPoints": "never",
+                        "showValues": false,
+                        "spanNulls": false,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        },
+                        "thresholdsStyle": {
+                            "mode": "off"
+                        }
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": 0
+                            }
+                        ]
+                    },
+                    "unit": "binBps"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 11,
+                "w": 24,
+                "x": 0,
+                "y": 138
+            },
+            "id": 71,
+            "interval": "5s",
+            "options": {
+                "legend": {
+                    "calcs": [],
+                    "displayMode": "list",
+                    "placement": "bottom",
+                    "showLegend": true
+                },
+                "tooltip": {
+                    "hideZeros": false,
+                    "mode": "single",
+                    "sort": "none"
+                }
+            },
+            "pluginVersion": "12.4.0-21419697389",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "prometheus"
+                    },
+                    "editorMode": "code",
+                    "expr": "sum(rate(container_network_receive_bytes_total{name=~'wat-dev-.*',name!=''}[1m])) by (name)",
+                    "legendFormat": "{{name}} - Receive",
+                    "range": true,
+                    "refId": "A"
+                },
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "prometheus"
+                    },
+                    "editorMode": "code",
+                    "expr": "sum(rate(container_network_transmit_bytes_total{name=~'wat-dev-.*',name!=''}[1m])) by (name)",
+                    "legendFormat": "{{name}} - Transmit",
+                    "range": true,
+                    "refId": "B"
+                }
+            ],
+            "title": "Network IO by Container",
+            "type": "timeseries"
         },
         {
             "datasource": {
@@ -3347,7 +3457,7 @@
                 "h": 11,
                 "w": 12,
                 "x": 0,
-                "y": 138
+                "y": 149
             },
             "id": 68,
             "interval": "5s",
@@ -3372,89 +3482,10 @@
                         "uid": "prometheus"
                     },
                     "editorMode": "code",
-                    "expr": "sum(rate(container_cpu_usage_seconds_total{name=~'.*nginx'}[1m])) by (name)",
-                    "legendFormat": "Nginx",
+                    "expr": "sum(rate(container_cpu_usage_seconds_total{name=~'wat-dev-.*',name!=''}[1m])) by (name)",
+                    "legendFormat": "{{name}}",
                     "range": true,
                     "refId": "A"
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "editorMode": "code",
-                    "expr": "sum(rate(container_cpu_usage_seconds_total{name=~'.*client'}[1m])) by (name)",
-                    "legendFormat": "Client",
-                    "range": true,
-                    "refId": "B"
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "editorMode": "code",
-                    "expr": "sum(rate(container_cpu_usage_seconds_total{name=~'.*server'}[1m])) by (name)",
-                    "legendFormat": "Server",
-                    "range": true,
-                    "refId": "C"
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "editorMode": "code",
-                    "expr": "sum(rate(container_cpu_usage_seconds_total{name=~'.*ai'}[1m])) by (name)",
-                    "instant": false,
-                    "legendFormat": "Ai",
-                    "range": true,
-                    "refId": "D"
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "editorMode": "code",
-                    "expr": "sum(rate(container_cpu_usage_seconds_total{name=~'.*ollama'}[1m])) by (name)",
-                    "instant": false,
-                    "legendFormat": "Ollama",
-                    "range": true,
-                    "refId": "E"
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "editorMode": "code",
-                    "expr": "sum(rate(container_cpu_usage_seconds_total{name=~'.*postgres'}[1m])) by (name)",
-                    "legendFormat": "Postgres",
-                    "range": true,
-                    "refId": "F"
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "editorMode": "code",
-                    "expr": "sum(rate(container_cpu_usage_seconds_total{name=~'.*redis'}[1m])) by (name)",
-                    "legendFormat": "Redis",
-                    "range": true,
-                    "refId": "G"
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "editorMode": "code",
-                    "expr": "sum(rate(container_cpu_usage_seconds_total{name=~'.*minio'}[1m])) by (name)",
-                    "legendFormat": "Minio",
-                    "range": true,
-                    "refId": "H"
                 }
             ],
             "title": "CPU Usage by Container",
@@ -3525,7 +3556,7 @@
                 "h": 11,
                 "w": 12,
                 "x": 12,
-                "y": 138
+                "y": 149
             },
             "id": 69,
             "interval": "5s",
@@ -3550,89 +3581,10 @@
                         "uid": "prometheus"
                     },
                     "editorMode": "code",
-                    "expr": "container_memory_usage_bytes{name=~'.*nginx'}",
-                    "legendFormat": "Nginx",
+                    "expr": "container_memory_usage_bytes{name=~'wat-dev-.*',name!=''}",
+                    "legendFormat": "{{name}}",
                     "range": true,
                     "refId": "A"
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "editorMode": "code",
-                    "expr": "container_memory_usage_bytes{name=~'.*client'}",
-                    "legendFormat": "Client",
-                    "range": true,
-                    "refId": "B"
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "editorMode": "code",
-                    "expr": "container_memory_usage_bytes{name=~'.*server'}",
-                    "legendFormat": "Server",
-                    "range": true,
-                    "refId": "C"
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "editorMode": "code",
-                    "expr": "container_memory_usage_bytes{name=~'.*ai'}",
-                    "instant": false,
-                    "legendFormat": "Ai",
-                    "range": true,
-                    "refId": "D"
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "editorMode": "code",
-                    "expr": "container_memory_usage_bytes{name=~'.*ollama'}",
-                    "instant": false,
-                    "legendFormat": "Ollama",
-                    "range": true,
-                    "refId": "E"
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "editorMode": "code",
-                    "expr": "container_memory_usage_bytes{name=~'.*postgres'}",
-                    "legendFormat": "Postgres",
-                    "range": true,
-                    "refId": "F"
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "editorMode": "code",
-                    "expr": "container_memory_usage_bytes{name=~'.*redis'}",
-                    "legendFormat": "Redis",
-                    "range": true,
-                    "refId": "G"
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "editorMode": "code",
-                    "expr": "container_memory_usage_bytes{name=~'.*minio'}",
-                    "legendFormat": "Minio",
-                    "range": true,
-                    "refId": "H"
                 }
             ],
             "title": "Memory Usage by Container",

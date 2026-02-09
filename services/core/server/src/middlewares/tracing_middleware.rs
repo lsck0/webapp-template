@@ -14,6 +14,10 @@ use config::ServerConfig;
 use crypto::JWTToken;
 use http::{Method, header};
 use http_body_util::BodyExt;
+use opentelemetry::trace::TracerProvider;
+use opentelemetry::KeyValue;
+use opentelemetry_otlp::WithExportConfig;
+use opentelemetry_semantic_conventions::resource::{SERVICE_NAME, SERVICE_VERSION};
 use tower_http::{classify::ServerErrorsFailureClass, trace::TraceLayer};
 use tracing::{Span, error, info, info_span};
 use tracing_subscriber::{EnvFilter, fmt, layer::SubscriberExt, util::SubscriberInitExt};
@@ -26,7 +30,7 @@ const REDACTED_PATHS: [&str; 1] = ["/api/metrics"];
 /// multiple times. (like in tests)
 static TRACING_INITIALIZED: OnceLock<bool> = OnceLock::new();
 
-/// Registers stdio and file logging subscriber.
+/// Registers stdio and file logging subscriber with OpenTelemetry export.
 pub(crate) fn initialize_tracing() {
     match TRACING_INITIALIZED.get() {
         Some(_) => return,
@@ -38,10 +42,39 @@ pub(crate) fn initialize_tracing() {
         false => "info",
     };
 
+    // Set up OpenTelemetry OTLP exporter
+    let otlp_endpoint =
+        std::env::var("OTEL_EXPORTER_OTLP_ENDPOINT").unwrap_or_else(|_| "http://tempo:4317".to_string());
+
+    let exporter = opentelemetry_otlp::SpanExporter::builder()
+        .with_tonic()
+        .with_endpoint(&otlp_endpoint)
+        .with_timeout(Duration::from_secs(3))
+        .build()
+        .expect("Failed to build OTLP exporter");
+
+    let provider = opentelemetry_sdk::trace::SdkTracerProvider::builder()
+        .with_batch_exporter(exporter)
+        .with_resource(
+            opentelemetry_sdk::Resource::builder()
+                .with_attribute(KeyValue::new(SERVICE_NAME, "server"))
+                .with_attribute(KeyValue::new(SERVICE_VERSION, env!("CARGO_PKG_VERSION")))
+                .build(),
+        )
+        .build();
+
+    opentelemetry::global::set_tracer_provider(provider.clone());
+
+    let tracer = provider.tracer("server");
+    let telemetry_layer = tracing_opentelemetry::layer().with_tracer(tracer);
+
     tracing_subscriber::registry()
         .with(EnvFilter::try_from_default_env().unwrap_or_else(|_| format!("server={log_level}").into()))
         .with(fmt::layer().json().with_writer(std::io::stdout))
+        .with(telemetry_layer)
         .init();
+
+    info!("OpenTelemetry tracing initialized with endpoint: {}", otlp_endpoint);
 }
 
 /// Applies the tracing layer to the router.
