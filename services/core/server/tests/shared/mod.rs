@@ -23,7 +23,7 @@ pub use macros::*;
 #[allow(unused)]
 pub async fn create_test_server(flags: DbInitFlags) -> TestServer {
     TestServer::new(
-        server::test_app(flags)
+        server::app(flags)
             .await
             .into_make_service_with_connect_info::<SocketAddr>(),
     )

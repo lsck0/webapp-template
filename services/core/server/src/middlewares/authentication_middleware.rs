@@ -1,3 +1,4 @@
+// TODO: refactor this with the new auth api
 use axum::{
     body::Body,
     extract::{FromRequestParts, Request},
@@ -12,11 +13,7 @@ use models::models::session_model::{SessionInvalidationReason, SessionModel};
 
 use crate::dtos::{Model, session_dto::SessionDTO, user_dto::UserDTO};
 
-/// Authentication middleware, checks for a valid session and adds it to the request extensions.
-pub(crate) async fn authentication_middleware(
-    mut request: Request<Body>,
-    next: Next,
-) -> ServerResult<impl IntoResponse> {
+pub async fn authentication_middleware(mut request: Request<Body>, next: Next) -> ServerResult<impl IntoResponse> {
     // get access token authorization header or bail
     let provided_access_token = request
         .headers()

@@ -35,31 +35,28 @@
             }"
             export SOME_ENV_VAR="Hello, World!"
 
-            cowsay "Welcome to the Webapp Template Terminal!" 2> /dev/null | lolcat
+            echo "Welcome to the Webapp Template Shell!"
           '';
           nativeInputs = with pkgs; [
             postgresql.lib
             openssl
-            python312
+            python313
           ];
           buildInputs = with pkgs; [
             act
             awscli2
             cargo-deny
             clang
-            cloc
-            cowsay
             curl
             diesel-cli
             docker
             docker-compose
             git
-            lolcat
             mold
             nodejs
             pkg-config
             pre-commit
-            python312
+            python313
             rustup
             terraform
           ];

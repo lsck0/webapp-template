@@ -1,6 +1,4 @@
-//! TODO: look into the use of auth in here
-
-use std::{sync::OnceLock, time::Duration};
+use std::{env, sync::OnceLock, time::Duration};
 
 use axum::{
     Router,
@@ -14,24 +12,18 @@ use config::ServerConfig;
 use crypto::JWTToken;
 use http::{Method, header};
 use http_body_util::BodyExt;
-use opentelemetry::trace::TracerProvider;
-use opentelemetry::KeyValue;
+use opentelemetry::{KeyValue, trace::TracerProvider};
 use opentelemetry_otlp::WithExportConfig;
 use opentelemetry_semantic_conventions::resource::{SERVICE_NAME, SERVICE_VERSION};
 use tower_http::{classify::ServerErrorsFailureClass, trace::TraceLayer};
 use tracing::{Span, error, info, info_span};
 use tracing_subscriber::{EnvFilter, fmt, layer::SubscriberExt, util::SubscriberInitExt};
 
-/// Fields that should be redacted from logs.
 const REDACTED_FIELDS: [&str; 4] = ["password", "otp", "access_token", "session_token"];
-const REDACTED_PATHS: [&str; 1] = ["/api/metrics"];
-
-/// Keep track if this module has been initialized. The subscriber panics if it is initialized
-/// multiple times. (like in tests)
+const REDACTED_PATHS: [&str; 2] = ["/api/health", "/api/metrics"];
 static TRACING_INITIALIZED: OnceLock<bool> = OnceLock::new();
 
-/// Registers stdio and file logging subscriber with OpenTelemetry export.
-pub(crate) fn initialize_tracing() {
+pub fn initialize_tracing() {
     match TRACING_INITIALIZED.get() {
         Some(_) => return,
         None => TRACING_INITIALIZED.set(true).expect("unreachable"),
@@ -42,10 +34,7 @@ pub(crate) fn initialize_tracing() {
         false => "info",
     };
 
-    // Set up OpenTelemetry OTLP exporter
-    let otlp_endpoint =
-        std::env::var("OTEL_EXPORTER_OTLP_ENDPOINT").unwrap_or_else(|_| "http://tempo:4317".to_string());
-
+    let otlp_endpoint = dotenvy::var("OTEL_EXPORTER_OTLP_ENDPOINT").expect("unreachable");
     let exporter = opentelemetry_otlp::SpanExporter::builder()
         .with_tonic()
         .with_endpoint(&otlp_endpoint)
@@ -57,7 +46,7 @@ pub(crate) fn initialize_tracing() {
         .with_batch_exporter(exporter)
         .with_resource(
             opentelemetry_sdk::Resource::builder()
-                .with_attribute(KeyValue::new(SERVICE_NAME, "server"))
+                .with_attribute(KeyValue::new(SERVICE_NAME, env!("CARGO_PKG_NAME")))
                 .with_attribute(KeyValue::new(SERVICE_VERSION, env!("CARGO_PKG_VERSION")))
                 .build(),
         )
@@ -65,7 +54,7 @@ pub(crate) fn initialize_tracing() {
 
     opentelemetry::global::set_tracer_provider(provider.clone());
 
-    let tracer = provider.tracer("server");
+    let tracer = provider.tracer(env!("CARGO_PKG_NAME"));
     let telemetry_layer = tracing_opentelemetry::layer().with_tracer(tracer);
 
     tracing_subscriber::registry()
@@ -73,18 +62,19 @@ pub(crate) fn initialize_tracing() {
         .with(fmt::layer().json().with_writer(std::io::stdout))
         .with(telemetry_layer)
         .init();
-
-    info!("OpenTelemetry tracing initialized with endpoint: {}", otlp_endpoint);
 }
 
-/// Applies the tracing layer to the router.
-pub(crate) fn add_tracing_layer(router: Router) -> Router {
+pub fn add_tracing_layer(router: Router) -> Router {
     router
         .layer(middleware::from_fn(response_body_extractor_middleware))
         .layer(
             TraceLayer::new_for_http()
                 .make_span_with(|request: &Request<_>| {
                     let path = request.extensions().get::<MatchedPath>().map(MatchedPath::as_str);
+
+                    if REDACTED_PATHS.contains(&path.unwrap_or_default()) {
+                        return info_span!("Disabled");
+                    }
 
                     // we get this from nginx via the header, not from the actual connection
                     let addr = request
@@ -95,6 +85,7 @@ pub(crate) fn add_tracing_layer(router: Router) -> Router {
 
                     let body = request.extensions().get::<RequestBody>().map(|body| body.0.clone());
 
+                    // TODO: use the new auth module for this
                     let session = request
                         .headers()
                         .get(header::AUTHORIZATION)
@@ -121,11 +112,9 @@ pub(crate) fn add_tracing_layer(router: Router) -> Router {
                     )
                 })
                 .on_response(|response: &Response, latency: Duration, _span: &Span| {
-                    // skip some paths (like /metrics)
-                    let path = response.extensions().get::<MatchedPath>().map(MatchedPath::as_str);
-                    dbg!(path);
-
-                    if REDACTED_PATHS.contains(&path.unwrap_or_default()) {
+                    if let Some(metadata) = _span.metadata()
+                        && metadata.name() == "Disabled"
+                    {
                         return;
                     }
 

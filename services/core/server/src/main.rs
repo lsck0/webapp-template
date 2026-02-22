@@ -1,5 +1,6 @@
 #![allow(clippy::needless_return)]
 
+use models::DbInitFlags;
 use pyroscope::PyroscopeAgent;
 use pyroscope_pprofrs::{PprofConfig, pprof_backend};
 use tokio::net::TcpListener;
@@ -13,7 +14,7 @@ async fn main() {
         .expect("Failed to create Pyroscope agent.");
     let agent_running = agent.start().expect("Failed to start Pyroscope agent.");
 
-    let app = server::app().await;
+    let app = server::app(DbInitFlags::NONE).await;
 
     let listener = TcpListener::bind("0.0.0.0:80")
         .await

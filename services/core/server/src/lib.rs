@@ -5,8 +5,9 @@
 pub mod dtos;
 pub mod endpoints;
 pub mod metrics;
-pub(crate) mod middlewares;
-pub(crate) mod tasks;
+pub mod middlewares;
+pub mod tasks;
+pub mod ui;
 
 use axum::{Router, routing::get};
 use axum_prometheus::PrometheusMetricLayer;
@@ -36,7 +37,7 @@ impl Modify for SecurityAddon {
     }
 }
 
-pub async fn app() -> Router {
+pub async fn app(flags: DbInitFlags) -> Router {
     unsafe {
         if !try_init_openssl_env_vars() {
             panic!("Failed to initialize OpenSSL environment variables");
@@ -44,41 +45,26 @@ pub async fn app() -> Router {
     }
 
     initialize_tracing();
-    initialize_database(DbInitFlags::NONE);
+    initialize_database(flags);
     initialize_cron_tasks().await;
 
     let (prometheus_layer, metric_handle) = PrometheusMetricLayer::pair();
 
     // /api/ -> API router
+    // /api/ui -> Alternative UI router, either to replace react or development testing
     // /api/docs -> API docs
     // /api/metrics -> Prometheus metrics (outside access blocked by nginx)
     let mut app: Router = Router::new()
         .merge(endpoints::endpoint_router())
-        .route("/api/metrics", get(|| async move { metric_handle.render() }))
+        .merge(ui::ui_router())
         .merge(utoipa_swagger_ui::SwaggerUi::new("/api/docs").url("/api/docs/openapi.json", ApiDoc::openapi()))
+        .route("/api/metrics", get(|| async move { metric_handle.render() }))
         .layer(prometheus_layer)
         .layer(CorsLayer::new().allow_origin(Any).allow_methods(Any).allow_headers([
             http::header::AUTHORIZATION,
             http::header::CONTENT_TYPE,
             http::header::ORIGIN,
         ]));
-
-    app = add_tracing_layer(app);
-
-    return app;
-}
-
-pub async fn test_app(flags: DbInitFlags) -> Router {
-    initialize_tracing();
-    initialize_database(flags);
-
-    let (prometheus_layer, metric_handle) = PrometheusMetricLayer::pair();
-
-    let mut app: Router = Router::new()
-        .nest("/", endpoints::endpoint_router())
-        .route("/api/metrics", get(|| async move { metric_handle.render() }))
-        .layer(prometheus_layer)
-        .layer(CorsLayer::new().allow_origin(Any).allow_methods(Any).allow_headers(Any));
 
     app = add_tracing_layer(app);
 

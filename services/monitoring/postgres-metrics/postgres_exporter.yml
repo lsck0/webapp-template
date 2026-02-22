@@ -1,0 +1,11 @@
+auth_modules:
+  primary:
+    type: userpass
+    userpass:
+      username: root
+      password: 1UdEQQTMBGCCWxvY2FsaG9zdIcEfwAAATAdBgNVHQ4EFgQUgGAHp2OojO06lrYu
+    options:
+      host: postgres
+      port: 5432
+      dbname: root
+      sslmode: disable

@@ -1,11 +1,10 @@
 * TODO
 
-- [ ] server code review
-- [ ] dto validation
-- [ ] analytics endpoint -> client crashes on grafana dashboard
+- [ ] server models / endpoints review
 - [ ] server auth/crypto rework
 - [ ] server testing framework
 - [ ] client api/auth implementation
+- [ ] analytics endpoint -> client crashes on grafana dashboard
 - [ ] prod, testing and bench docker configurations
 - [ ] security checks against the running system?
 - [ ] offsite minio backup to S3

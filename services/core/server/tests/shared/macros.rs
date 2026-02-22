@@ -23,6 +23,7 @@ macro_rules! make_request {
         }
     }};
 }
+
 #[allow(unused)]
 pub(crate) use make_request;
 

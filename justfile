@@ -87,7 +87,3 @@ server-docs:
 # Run diesel CLI
 diesel *args:
     @cd services/core/server && diesel --database-url=postgres://admin:password@postgres.localhost/root {{args}}
-
-# Show project statistics
-stats:
-    @cloc . -vcs git --exclude-content='.lock'

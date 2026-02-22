@@ -6,7 +6,7 @@ FROM nginx/nginx-prometheus-exporter:latest
 
 COPY --from=curl /curl /usr/bin/curl
 
-CMD ["-nginx.scrape-uri=http://nginx:6666/status"]
+CMD ["--nginx.scrape-uri=http://nginx:6666/status"]
 
 EXPOSE 9113
 
