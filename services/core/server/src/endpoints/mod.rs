@@ -9,45 +9,62 @@ use axum::{Router, http::Uri, response::IntoResponse, routing::get};
 use errors::ServerError;
 use ts_rs::TS;
 
+use crate::endpoints::{
+    auth_endpoints::{
+        invite_endpoint::INVITE_ENDPOINT,
+        login_endpoint::LOGIN_ENDPOINT,
+        logout_endpoint::LOGOUT_ENDPOINT,
+        otp_endpoints::{OTP_BACKUP_CODES_ENDPOINT, OTP_DISABLE_ENDPOINT, OTP_VALIDATE_ENDPOINT},
+        password_change_endpoint::PASSWORD_CHANGE_ENDPOINT,
+        refresh_endpoint::REFRESH_ENDPOINT,
+        register_endpoint::REGISTER_ENDPOINT,
+    },
+    health_endpoints::HEALTH_ENDPOINT,
+    post_endpoints::POST_ENDPOINT,
+    session_endpoints::SESSION_ENDPOINT,
+    user_endpoints::USER_ENDPOINT,
+    ws_endpoints::WEBSOCKET_ENDPOINT,
+};
+
 /// API Endpoints.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, TS)]
 #[ts(export)]
 pub enum Endpoints {
-    #[ts(rename = "/api/health")]
+    #[ts(rename = HEALTH_ENDPOINT)]
     HEALTH,
 
-    #[ts(rename = "/api/ws")]
+    #[ts(rename = WEBSOCKET_ENDPOINT)]
     WS,
 
-    #[ts(rename = "/api/auth/invite")]
+    #[ts(rename = INVITE_ENDPOINT)]
     INVITE,
-    #[ts(rename = "/api/auth/register")]
+    #[ts(rename = REGISTER_ENDPOINT)]
     REGISTER,
-    #[ts(rename = "/api/auth/login")]
+    #[ts(rename = LOGIN_ENDPOINT)]
     LOGIN,
-    #[ts(rename = "/api/auth/logout")]
+    #[ts(rename = LOGOUT_ENDPOINT)]
     LOGOUT,
-    #[ts(rename = "/api/auth/refresh")]
+    #[ts(rename = REFRESH_ENDPOINT)]
     REFRESH,
-    #[ts(rename = "/api/auth/password-change")]
+    #[ts(rename = PASSWORD_CHANGE_ENDPOINT)]
     PASSWORD_CHANGE,
-    #[ts(rename = "/api/auth/otp/enable")]
+    #[ts(rename = OTP_VALIDATE_ENDPOINT)]
     OTP_ENABLE,
-    #[ts(rename = "/api/auth/otp/disable")]
+    #[ts(rename = OTP_DISABLE_ENDPOINT)]
     OTP_DISABLE,
-    #[ts(rename = "/api/auth/otp/validate")]
+    #[ts(rename = OTP_VALIDATE_ENDPOINT)]
     OTP_VALIDATE,
-    #[ts(rename = "/api/auth/otp/backup-codes")]
+    #[ts(rename = OTP_BACKUP_CODES_ENDPOINT)]
     OTP_BACKUP_CODES,
 
-    #[ts(rename = "/api/user")]
+    #[ts(rename = USER_ENDPOINT)]
     USER,
 
-    #[ts(rename = "/api/session")]
+    #[ts(rename = SESSION_ENDPOINT)]
     SESSION,
 
-    #[ts(rename = "/api/post")]
+    #[ts(rename = POST_ENDPOINT)]
     POST,
 }
 

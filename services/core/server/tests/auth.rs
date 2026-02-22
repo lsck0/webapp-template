@@ -10,7 +10,7 @@ use server::{
             invite_endpoint::INVITE_ENDPOINT,
             login_endpoint::{LOGIN_ENDPOINT, LoginInfo},
             logout_endpoint::LOGOUT_ENDPOINT,
-            password_change_endpoint::{PW_CHANGE_ENDPOINT, PasswordChangeInfo},
+            password_change_endpoint::{PASSWORD_CHANGE_ENDPOINT, PasswordChangeInfo},
             register_endpoint::{REGISTER_ENDPOINT, RegisterInfo},
         },
         session_endpoints::{GetSessionRequest, GetSessionTag, SESSION_ENDPOINT},
@@ -123,7 +123,7 @@ async fn auth_flow() {
     // changing the password should work
     let new_password = "new_password";
     let response = user_client
-        .post(PW_CHANGE_ENDPOINT)
+        .post(PASSWORD_CHANGE_ENDPOINT)
         .json(&PasswordChangeInfo {
             old_password: password.to_string(),
             new_password: new_password.to_string(),

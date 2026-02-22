@@ -32,6 +32,9 @@ pub fn ws_router() -> Router {
 }
 
 /// Connect to the websocket.
+///
+/// Auth: Required
+/// Permissions: None
 #[utoipa::path(
     get,
     path = WEBSOCKET_ENDPOINT,
@@ -50,7 +53,6 @@ async fn ws_handler(ws: WebSocketUpgrade, session: SessionDTO) -> impl IntoRespo
     });
 }
 
-/// A list of connected ws clients, along with their session id.
 #[allow(clippy::type_complexity)]
 static CLIENTS: LazyLock<Arc<Mutex<Vec<(Uuid, WebSocket)>>>> = LazyLock::new(|| Arc::new(Mutex::new(vec![])));
 
@@ -63,7 +65,6 @@ pub enum WsNotification {
 }
 
 impl WsNotification {
-    /// Sends a notification to all connected clients.
     pub async fn send(&self) {
         let message = serde_json::to_string(self).expect("unreachable");
 

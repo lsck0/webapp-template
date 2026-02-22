@@ -7,7 +7,7 @@ use utoipa::ToSchema;
 
 use crate::dtos::{DTO, session_dto::SessionDTO};
 
-pub const PW_CHANGE_ENDPOINT: &str = "/api/auth/password-change";
+pub const PASSWORD_CHANGE_ENDPOINT: &str = "/api/auth/password-change";
 
 #[derive(Debug, Clone, Serialize, Deserialize, TS, ToSchema)]
 #[ts(export)]
@@ -23,7 +23,7 @@ pub struct PasswordChangeInfo {
 /// Permissions: None
 #[utoipa::path(
     post,
-    path = PW_CHANGE_ENDPOINT,
+    path = PASSWORD_CHANGE_ENDPOINT,
     request_body = PasswordChangeInfo,
     security(("token" = [])),
     responses(

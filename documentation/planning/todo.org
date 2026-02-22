@@ -1,6 +1,5 @@
 * TODO
 
-- [ ] server models / endpoints review
 - [ ] server auth/crypto rework
 - [ ] server testing framework
 - [ ] client api/auth implementation
