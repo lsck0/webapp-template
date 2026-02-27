@@ -1,0 +1,10 @@
+default:
+    @just --list
+
+check:
+    npm ci
+    npx -y tsc
+    npx -y eslint .
+
+generate-pwa-assets:
+    npm run generate-pwa-assets

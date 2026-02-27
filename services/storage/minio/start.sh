@@ -5,7 +5,7 @@ set -ex
 # start minio server
 minio server /data --console-address :3002 &
 
-sleep 10
+sleep 15
 
 # configure mc
 mc alias set localminio $MINIO_URL $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD

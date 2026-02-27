@@ -1,6 +1,7 @@
 * TODO
 
 - [ ] server auth/crypto rework
+- [ ] server job system / deferred returns
 - [ ] server testing framework
 - [ ] client api/auth implementation
 - [ ] analytics endpoint -> client crashes on grafana dashboard

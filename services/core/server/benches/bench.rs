@@ -1,5 +1,3 @@
-//! Micro-Performance Benchmarks. Endpoint performance can monitored in the Grafana dashboard.
-
 use criterion::{Criterion, criterion_group, criterion_main};
 use crypto::HashedPassword;
 use models::{

@@ -53,7 +53,7 @@ pub fn initialize_database(flags: DbInitFlags) {
         DB_POOL = Some(pool);
     }
 
-    let mut connection = get_db().expect("Failed to access the database.");
+    let mut connection = get_db().expect("Failed to access the database while setting it up.");
 
     if flags.contains(DbInitFlags::NUKE) {
         connection

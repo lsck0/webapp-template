@@ -44,6 +44,7 @@
           ];
           buildInputs = with pkgs; [
             act
+            aflplusplus
             awscli2
             cargo-deny
             clang
@@ -52,6 +53,8 @@
             docker
             docker-compose
             git
+            haskellPackages.liquid-fixpoint
+            just
             mold
             nodejs
             pkg-config

@@ -7,6 +7,7 @@ mod derive_env_variables;
 mod derive_pg_enum;
 mod derive_pg_text;
 mod example_attr;
+mod example_proc;
 
 use proc_macro::TokenStream;
 
@@ -69,16 +70,24 @@ pub fn derive_pg_text(input: TokenStream) -> TokenStream {
     return derive_pg_text::derive_pg_text_impl(input);
 }
 
+/// This is an example of a custom procedural macro.
+///
+/// ```rust, no_run
+/// example_proc_macro!();
+/// ```
+#[proc_macro]
+pub fn example_proc_macro(input: TokenStream) -> TokenStream {
+    return example_proc::example_proc_macro_impl(input);
+}
+
 /// This is an example of a custom attribute macro.
 ///
 /// ```rust, no_run
-/// # fn main() {
 /// #[example_attr_macro(name = "foo", description = "bar")]
 /// struct MyStruct;
 ///
 /// assert_eq!(MyStruct::name(), "foo");
 /// assert_eq!(MyStruct::description(), Some("bar"));
-/// # }
 /// ```
 #[proc_macro_attribute]
 pub fn example_attr_macro(args: TokenStream, r#struct: TokenStream) -> TokenStream {

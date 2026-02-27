@@ -4,10 +4,22 @@ import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
 
-export default tseslint.config(
-    { ignores: ["dist"] },
+export default [
     {
-        extends: [js.configs.recommended, ...tseslint.configs.recommended],
+        ignores: ["dist"],
+    },
+
+    {
+        files: ["**/*.cjs", "**/*.config.js", "**/*.config.cjs"],
+        languageOptions: {
+            globals: globals.node,
+        },
+    },
+
+    js.configs.recommended,
+    ...tseslint.configs.recommended,
+
+    {
         files: ["**/*.{ts,tsx}"],
         languageOptions: {
             ecmaVersion: 2020,
@@ -22,4 +34,12 @@ export default tseslint.config(
             "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
         },
     },
-);
+
+    {
+        files: ["src/components/ui/**/*.{ts,tsx}", "src/i18n/**/*.{ts,tsx}"],
+        rules: {
+            "@typescript-eslint/no-unused-vars": "off",
+            "react-refresh/only-export-components": "off",
+        },
+    },
+];

@@ -42,12 +42,11 @@ impl LoginAttemptModel {
     }
 
     pub fn find_past_attempt(user_id: &Uuid) -> ServerResult<Option<Self>> {
+        let timespan = ServerConfig::get().login_attempt_timespan;
+
         let past_attempt = login_attempts::table
             .filter(login_attempts::user_id.eq(user_id))
-            .filter(
-                login_attempts::last_attempt
-                    .ge(Utc::now() - Duration::minutes(ServerConfig::get().login_attempt_timespan)),
-            )
+            .filter(login_attempts::last_attempt.ge(Utc::now() - Duration::minutes(timespan)))
             .first::<LoginAttemptModel>(&mut get_db()?)
             .optional()?;
 

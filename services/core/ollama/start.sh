@@ -2,8 +2,8 @@
 
 ollama serve &
 
-sleep 3
+sleep 5
 
-# ollama pull phi3:3.8b
+# ollama pull embeddinggemma
 
 wait

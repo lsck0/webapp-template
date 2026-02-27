@@ -8,4 +8,8 @@ RUN npm install --legacy-peer-deps
 
 COPY . .
 
+RUN npx -y tsc
+
+RUN npx -y eslint .
+
 RUN npm run test

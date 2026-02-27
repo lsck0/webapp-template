@@ -3,13 +3,9 @@ name = "config"
 version = "0.0.0"
 edition = "2024"
 
-[lib]
-doctest = false
+[dependencies]
+dotenvy.workspace = true
+macros.workspace = true
 
 [dev-dependencies]
 pretty_assertions.workspace = true
-
-[dependencies]
-macros.workspace = true
-
-dotenvy.workspace = true

@@ -1,0 +1,7 @@
+default:
+    @just --list
+
+check:
+    poetry install
+    poetry run flake8 src
+    poetry run mypy src

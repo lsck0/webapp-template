@@ -12,7 +12,7 @@ export type Endpoints =
     | "/api/auth/logout"
     | "/api/auth/refresh"
     | "/api/auth/password-change"
-    | "/api/auth/otp/enable"
+    | "/api/auth/otp/validate"
     | "/api/auth/otp/disable"
     | "/api/auth/otp/validate"
     | "/api/auth/otp/backup-codes"

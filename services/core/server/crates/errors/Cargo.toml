@@ -3,9 +3,6 @@ name = "errors"
 version = "0.0.0"
 edition = "2024"
 
-[lib]
-doctest = false
-
 [dependencies]
 axum.workspace = true
 diesel.workspace = true

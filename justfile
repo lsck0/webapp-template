@@ -44,46 +44,14 @@ tmux rule:
 
 # Run linters and type checks
 check:
-	#!/usr/bin/env bash
-	set -euo pipefail
-	ROOT="{{ justfile_directory() }}"
+    #!/usr/bin/env bash
+    set -euo pipefail
+    ROOT="{{ justfile_directory() }}"
 
-	cd "$ROOT/services/core/server" && cargo deny check --allow unlicensed --allow license-not-encountered --allow duplicate 2>&1 | grep -v "warning\[parse-error\]: error parsing SPDX" | grep -v "warning\[no-license-field\]:" | grep -v "^ ├" | grep -v "^   " | grep -v "^$" || true
-	cd "$ROOT/services/core/server" && cargo check --workspace
-	cd "$ROOT/services/core/server" && cargo clippy --workspace --all-targets --all-features -- -D warnings
-	cd "$ROOT/services/core/client" && npm ci
-	cd "$ROOT/services/core/client" && npx -y tsc
-	cd "$ROOT/services/core/client" && npx -y eslint .
-	cd "$ROOT/services/core/ai" && poetry install
-	cd "$ROOT/services/core/ai" && poetry run flake8 src
-	cd "$ROOT/services/core/ai" && poetry run mypy src
-
-# Run code formatters
-fmt:
-    cd services/core/server && cargo fmt --all
-    cd services/core/client && npx -y prettier . --write > /dev/null
-    cd services/core/ai && black . 2> /dev/null
-    cd services/core/ai && isort . > /dev/null
+    cd "$ROOT/services/core/server" && just check
+    cd "$ROOT/services/core/client" && just check
+    cd "$ROOT/services/core/ai" && just check
 
 # Bundle the project into a zip file
 bundle:
     @zip bundle.zip $(git ls-files)
-
-# Export API bindings to the client
-export-bindings:
-    @cd services/core/server && cargo test export_bindings --workspace
-    @rm -f services/core/client/src/api/bindings/*
-    @find services/core/server -type f -regex '.*/bindings/[^/]*\.ts$' -print0 | xargs -0 -I {} mv {} services/core/client/src/api/bindings
-    @find services/core/server -type d -name 'bindings' -empty -delete
-
-# Generate PWA assets
-generate-pwa-assets:
-    @cd services/core/client && npm run generate-pwa-assets
-
-# Open the server documentation
-server-docs:
-    @cd services/core/server && cargo doc --lib --open --document-private-items
-
-# Run diesel CLI
-diesel *args:
-    @cd services/core/server && diesel --database-url=postgres://admin:password@postgres.localhost/root {{args}}

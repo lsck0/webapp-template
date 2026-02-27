@@ -6,14 +6,12 @@ pub fn derive_env_variables_impl(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
     let name = input.ident;
 
-    let fields = if let Data::Struct(data_struct) = input.data {
-        if let Fields::Named(fields) = data_struct.fields {
-            fields.named
-        } else {
-            unimplemented!("Only structs with named fields are supported.")
-        }
+    let fields = if let Data::Struct(data_struct) = input.data
+        && let Fields::Named(fields) = data_struct.fields
+    {
+        fields.named
     } else {
-        unimplemented!("Only structs are supported.")
+        unimplemented!("Only structs with named fields are supported.")
     };
 
     let field_assignments = fields.into_iter().map(|field| {

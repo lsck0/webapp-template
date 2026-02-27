@@ -1,0 +1,23 @@
+default:
+    @just --list
+
+check:
+    cargo deny check --allow unmatched-source --allow unlicensed --allow no-license-field --allow license-not-encountered --allow duplicate 
+    cargo audit
+    cargo check --workspace --all-targets
+    cargo clippy --workspace --all-targets --all-features -- -D warnings
+    cargo flux check --workspace
+    cargo kani --workspace
+    cd ./fuzz/ && ./run.sh
+
+server-docs:
+    cargo doc --lib --open --document-private-items
+
+export-bindings:
+    cargo test export_bindings --workspace
+    rm -f ./../client/src/api/bindings/*
+    find . -type f -regex '.*/bindings/[^/]*\.ts$' -print0 | xargs -0 -I {} mv {} ./../client/src/api/bindings
+    find . -type d -name 'bindings' -empty -delete
+
+diesel *args:
+    diesel --database-url=postgres://admin:password@postgres.localhost/root {{args}}

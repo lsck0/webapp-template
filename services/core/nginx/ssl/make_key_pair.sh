@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# ECDSA with prime256v1 curve (P-256) for better browser compatibility
+# ECDSA with prime256v1 curve (P-256)
 openssl ecparam -name prime256v1 -genkey -noout -out selfsigned.key
 
 # create certificate

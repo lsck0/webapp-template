@@ -46,7 +46,7 @@ macro_rules! ensure {
 ///
 /// # Example
 ///
-/// ```rust,ignore
+/// ```rust,no_run
 /// let mut errors = vec![];
 ///
 /// validate_string_length!(errors, self, title, 1, 100);
@@ -78,7 +78,7 @@ macro_rules! validate_string_length {
 ///
 /// # Example
 ///
-/// ```rust,ignore
+/// ```rust,no_run
 /// let mut errors = vec![];
 ///
 /// validate_number_range!(errors, self, age, 1, 100);

@@ -1,6 +1,6 @@
 FROM rustlang/rust:nightly AS base
-RUN apt-get update && apt-get install --assume-yes clang mold
-RUN cargo install cargo-chef cargo-deny
+RUN apt-get update && apt-get install --assume-yes clang mold just
+RUN cargo install cargo-afl cargo-audit cargo-chef cargo-deny
 
 FROM base AS planner
 WORKDIR /app
@@ -16,6 +16,5 @@ FROM base AS runtime
 WORKDIR /app
 COPY .. .
 COPY --from=builder /app/target target
-RUN cargo deny check --allow unlicensed --allow license-not-encountered --allow duplicate
-RUN cargo clippy --workspace --all-targets --all-features -- -D warnings
+RUN just check
 RUN cargo test --workspace --all-features
