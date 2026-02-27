@@ -1,17 +1,10 @@
 // TODO: refactor this with the new auth api
-use axum::{
-    body::Body,
-    extract::{FromRequestParts, Request},
-    http::header,
-    middleware::Next,
-    response::IntoResponse,
-};
+use axum::{body::Body, extract::Request, http::header, middleware::Next, response::IntoResponse};
 use crypto::JWTToken;
 use errors::{ServerError, ServerResult, bail, ensure};
-use http::request::Parts;
 use models::models::session_model::{SessionInvalidationReason, SessionModel};
 
-use crate::dtos::{Model, session_dto::SessionDTO, user_dto::UserDTO};
+use crate::dtos::Model;
 
 pub async fn authentication_middleware(mut request: Request<Body>, next: Next) -> ServerResult<impl IntoResponse> {
     // get access token authorization header or bail
@@ -48,37 +41,4 @@ pub async fn authentication_middleware(mut request: Request<Body>, next: Next) -
     request.extensions_mut().insert(session.to_dto()?);
 
     return Ok(next.run(request).await);
-}
-
-// extractors to get the session and user from the request
-
-impl<S> FromRequestParts<S> for SessionDTO
-where
-    S: Send + Sync,
-{
-    type Rejection = ServerError;
-
-    async fn from_request_parts(parts: &mut Parts, _state: &S) -> Result<Self, Self::Rejection> {
-        return parts
-            .extensions
-            .get::<SessionDTO>()
-            .ok_or(ServerError::Unauthenticated)
-            .cloned();
-    }
-}
-
-impl<S> FromRequestParts<S> for UserDTO
-where
-    S: Send + Sync,
-{
-    type Rejection = ServerError;
-
-    async fn from_request_parts(parts: &mut Parts, _state: &S) -> Result<Self, Self::Rejection> {
-        return parts
-            .extensions
-            .get::<SessionDTO>()
-            .ok_or(ServerError::Unauthenticated)
-            .cloned()
-            .map(|session| session.user);
-    }
 }

@@ -4,6 +4,7 @@
 
 pub mod dtos;
 pub mod endpoints;
+pub mod extractors;
 pub mod metrics;
 pub mod middlewares;
 pub mod tasks;

@@ -67,6 +67,8 @@ pub enum ServerError {
     #[error(transparent)]
     JsonRejection(#[from] JsonRejection),
     #[error(transparent)]
+    QueryRejection(#[from] serde_qs::Error),
+    #[error(transparent)]
     DieselError(#[from] diesel::result::Error),
     #[error(transparent)]
     TokenError(#[from] jsonwebtoken::errors::Error),
@@ -127,6 +129,7 @@ impl IntoResponse for ServerError {
             Generic(_) => (StatusCode::INTERNAL_SERVER_ERROR, self.to_string()).into_response(),
 
             JsonRejection(_) => (StatusCode::UNPROCESSABLE_ENTITY, self.to_string()).into_response(),
+            QueryRejection(_) => (StatusCode::UNPROCESSABLE_ENTITY, self.to_string()).into_response(),
             DieselError(_) => (StatusCode::INTERNAL_SERVER_ERROR, self.to_string()).into_response(),
             TokenError(_) => (StatusCode::UNAUTHORIZED, self.to_string()).into_response(),
             HashingError => (StatusCode::INTERNAL_SERVER_ERROR, self.to_string()).into_response(),
