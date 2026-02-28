@@ -52,6 +52,10 @@ pub enum ServerError {
     FileNotFound(String),
     #[error("API endpoint not found: {0}")]
     ApiEndpointNotFound(String),
+    #[error("Unknown version: {0}")]
+    UnknownVersion(String),
+    #[error("Version missing")]
+    MissingVersion,
 
     // Database errors.
     #[error("Diesel pool exhaustion")]
@@ -123,6 +127,8 @@ impl IntoResponse for ServerError {
 
             FileNotFound(_) => (StatusCode::NOT_FOUND, self.to_string()).into_response(),
             ApiEndpointNotFound(_) => (StatusCode::NOT_FOUND, self.to_string()).into_response(),
+            UnknownVersion(_) => (StatusCode::NOT_FOUND, self.to_string()).into_response(),
+            MissingVersion => (StatusCode::NOT_FOUND, self.to_string()).into_response(),
 
             DBPoolExhausted => (StatusCode::SERVICE_UNAVAILABLE, self.to_string()).into_response(),
 
