@@ -24,6 +24,8 @@ pub struct ServerConfig {
     pub default_user_name: String,
     pub default_user_password: String,
 
+    pub otel_exporter_otlp_endpoint: String,
+
     pub jwt_secret: String,
     /// in minutes
     pub jwt_access_token_lifetime: u64,

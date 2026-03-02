@@ -34,10 +34,9 @@ pub fn initialize_tracing() {
         false => "info",
     };
 
-    let otlp_endpoint = dotenvy::var("OTEL_EXPORTER_OTLP_ENDPOINT").expect("unreachable");
     let exporter = opentelemetry_otlp::SpanExporter::builder()
         .with_tonic()
-        .with_endpoint(&otlp_endpoint)
+        .with_endpoint(&ServerConfig::get().otel_exporter_otlp_endpoint)
         .with_timeout(Duration::from_secs(3))
         .build()
         .expect("Failed to build OTLP exporter");

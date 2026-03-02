@@ -46,6 +46,14 @@ pub enum ServerError {
     InvalidToken,
     #[error("Expired token")]
     ExpiredToken,
+    #[error("Account locked until {0}")]
+    AccountLocked(String),
+    #[error("Invalid OTP code")]
+    InvalidOtp,
+    #[error("OTP already enabled")]
+    OtpAlreadyEnabled,
+    #[error("OTP not enabled")]
+    OtpNotEnabled,
 
     // Routing errors.
     #[error("File not found: {0}")]
@@ -56,12 +64,38 @@ pub enum ServerError {
     UnknownVersion(String),
     #[error("Version missing")]
     MissingVersion,
+    #[error("Method not allowed")]
+    MethodNotAllowed,
+
+    // Rate limiting errors.
+    #[error("Rate limit exceeded, retry after {0}s")]
+    RateLimited(u64),
 
     // Database errors.
     #[error("Diesel pool exhaustion")]
     DBPoolExhausted,
+    #[error("Database connection failed")]
+    DBConnectionFailed,
+    #[error("Transaction failed: {0}")]
+    TransactionFailed(String),
+    #[error("Conflict: resource already exists")]
+    Conflict,
+
+    // External service errors.
+    #[error("Service unavailable: {0}")]
+    ServiceUnavailable(String),
+    #[error("Request timeout")]
+    Timeout,
+
+    // Payload errors.
+    #[error("Payload too large")]
+    PayloadTooLarge,
+    #[error("Unsupported media type: {0}")]
+    UnsupportedMediaType(String),
 
     // Fallback error.
+    #[error("Internal server error: {0}")]
+    Internal(String),
     #[error("Generic error: {0}")]
     Generic(String),
 
@@ -88,6 +122,10 @@ pub enum ServerError {
 pub enum UserError {
     BodyError(Vec<FieldError>),
     TooManyOpenSessions,
+    AccountLocked(String),
+    PasswordTooWeak(String),
+    EmailNotVerified,
+    InviteRequired,
     Generic(String),
 }
 
@@ -104,10 +142,15 @@ pub struct FieldError {
 #[ts(export)]
 pub enum FieldErrorReason {
     InvalidRange { min: i32, max: i32 },
+    InvalidFormat,
+    Required,
     InvalidCredentials,
     ExpiredInviteToken,
     InvalidInviteToken,
     UserAlreadyExists(String),
+    EmailAlreadyInUse(String),
+    InvalidEmail,
+    PasswordMismatch,
 }
 
 /// Converting the error into a response.
@@ -124,14 +167,31 @@ impl IntoResponse for ServerError {
             Unauthorized => (StatusCode::FORBIDDEN, self.to_string()).into_response(),
             InvalidToken => (StatusCode::UNAUTHORIZED, self.to_string()).into_response(),
             ExpiredToken => (StatusCode::UNAUTHORIZED, self.to_string()).into_response(),
+            AccountLocked(_) => (StatusCode::FORBIDDEN, self.to_string()).into_response(),
+            InvalidOtp => (StatusCode::UNAUTHORIZED, self.to_string()).into_response(),
+            OtpAlreadyEnabled => (StatusCode::CONFLICT, self.to_string()).into_response(),
+            OtpNotEnabled => (StatusCode::BAD_REQUEST, self.to_string()).into_response(),
 
             FileNotFound(_) => (StatusCode::NOT_FOUND, self.to_string()).into_response(),
             ApiEndpointNotFound(_) => (StatusCode::NOT_FOUND, self.to_string()).into_response(),
             UnknownVersion(_) => (StatusCode::NOT_FOUND, self.to_string()).into_response(),
             MissingVersion => (StatusCode::NOT_FOUND, self.to_string()).into_response(),
+            MethodNotAllowed => (StatusCode::METHOD_NOT_ALLOWED, self.to_string()).into_response(),
+
+            RateLimited(_) => (StatusCode::TOO_MANY_REQUESTS, self.to_string()).into_response(),
 
             DBPoolExhausted => (StatusCode::SERVICE_UNAVAILABLE, self.to_string()).into_response(),
+            DBConnectionFailed => (StatusCode::SERVICE_UNAVAILABLE, self.to_string()).into_response(),
+            TransactionFailed(_) => (StatusCode::INTERNAL_SERVER_ERROR, self.to_string()).into_response(),
+            Conflict => (StatusCode::CONFLICT, self.to_string()).into_response(),
 
+            ServiceUnavailable(_) => (StatusCode::SERVICE_UNAVAILABLE, self.to_string()).into_response(),
+            Timeout => (StatusCode::GATEWAY_TIMEOUT, self.to_string()).into_response(),
+
+            PayloadTooLarge => (StatusCode::PAYLOAD_TOO_LARGE, self.to_string()).into_response(),
+            UnsupportedMediaType(_) => (StatusCode::UNSUPPORTED_MEDIA_TYPE, self.to_string()).into_response(),
+
+            Internal(_) => (StatusCode::INTERNAL_SERVER_ERROR, self.to_string()).into_response(),
             Generic(_) => (StatusCode::INTERNAL_SERVER_ERROR, self.to_string()).into_response(),
 
             JsonRejection(_) => (StatusCode::UNPROCESSABLE_ENTITY, self.to_string()).into_response(),

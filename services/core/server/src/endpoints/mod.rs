@@ -14,7 +14,7 @@ use crate::endpoints::{
         invite_endpoint::INVITE_ENDPOINT,
         login_endpoint::LOGIN_ENDPOINT,
         logout_endpoint::LOGOUT_ENDPOINT,
-        otp_endpoints::{OTP_BACKUP_CODES_ENDPOINT, OTP_DISABLE_ENDPOINT, OTP_VALIDATE_ENDPOINT},
+        otp_endpoints::{OTP_BACKUP_CODES_ENDPOINT, OTP_DISABLE_ENDPOINT, OTP_ENABLE_ENDPOINT, OTP_VALIDATE_ENDPOINT},
         password_change_endpoint::PASSWORD_CHANGE_ENDPOINT,
         refresh_endpoint::REFRESH_ENDPOINT,
         register_endpoint::REGISTER_ENDPOINT,
@@ -49,7 +49,7 @@ pub enum Endpoints {
     REFRESH,
     #[ts(rename = PASSWORD_CHANGE_ENDPOINT)]
     PASSWORD_CHANGE,
-    #[ts(rename = OTP_VALIDATE_ENDPOINT)]
+    #[ts(rename = OTP_ENABLE_ENDPOINT)]
     OTP_ENABLE,
     #[ts(rename = OTP_DISABLE_ENDPOINT)]
     OTP_DISABLE,

@@ -116,11 +116,11 @@ pub enum CloseSessionRequest {
     ),
 )]
 async fn close_session_handler(
-    parameters: Query<CloseSessionRequest>,
     session: SessionDTO,
+    Json(parameters): Json<CloseSessionRequest>,
 ) -> ServerResult<impl IntoResponse> {
     use CloseSessionRequest::*;
-    match parameters.0 {
+    match parameters {
         All {} => {
             SessionModel::close_all_for_user(session.user.id, SessionInvalidationReason::UserClosed)?;
 
