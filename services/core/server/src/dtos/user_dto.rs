@@ -1,6 +1,8 @@
+use std::collections::HashSet;
+
 use chrono::{DateTime, Utc};
 use errors::{ServerError, ServerResult, bail};
-use models::models::user_model::UserModel;
+use models::models::{permissions::Permissions, user_model::UserModel};
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 use utoipa::ToSchema;
@@ -16,6 +18,10 @@ pub struct UserDTO {
     pub id: Uuid,
 
     pub name: String,
+    pub name_id: i16,
+
+    #[ts(type = "string[]")]
+    pub permissions: HashSet<Permissions>,
 
     #[schema(value_type = String)]
     pub updated_at: DateTime<Utc>,
@@ -39,9 +45,13 @@ impl DTO for UserDTO {
     }
 
     fn from_model(model: Self::Model) -> ServerResult<Self> {
+        let permissions = model.resolve_permissions()?;
+
         return Ok(Self {
             id: model.id,
             name: model.name,
+            name_id: model.name_id,
+            permissions,
             updated_at: model.updated_at,
             created_at: model.created_at,
         });

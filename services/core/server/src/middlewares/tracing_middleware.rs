@@ -9,8 +9,7 @@ use axum::{
     response::{IntoResponse, Response},
 };
 use config::ServerConfig;
-use crypto::JWTToken;
-use http::{Method, header};
+use http::Method;
 use http_body_util::BodyExt;
 use opentelemetry::{KeyValue, trace::TracerProvider};
 use opentelemetry_otlp::WithExportConfig;
@@ -19,7 +18,7 @@ use tower_http::{classify::ServerErrorsFailureClass, trace::TraceLayer};
 use tracing::{Span, error, info, info_span};
 use tracing_subscriber::{EnvFilter, fmt, layer::SubscriberExt, util::SubscriberInitExt};
 
-const REDACTED_FIELDS: [&str; 4] = ["password", "otp", "access_token", "session_token"];
+const REDACTED_FIELDS: [&str; 7] = ["password", "otp", "access_token", "session_token", "secret", "recovery_codes", "qr_code_data_uri"];
 const REDACTED_PATHS: [&str; 2] = ["/api/health", "/api/metrics"];
 static TRACING_INITIALIZED: OnceLock<bool> = OnceLock::new();
 
@@ -84,22 +83,8 @@ pub fn add_tracing_layer(router: Router) -> Router {
 
                     let body = request.extensions().get::<RequestBody>().map(|body| body.0.clone());
 
-                    // TODO: use the new auth module for this
-                    let session = request
-                        .headers()
-                        .get(header::AUTHORIZATION)
-                        .and_then(|auth_header| auth_header.to_str().ok())
-                        .and_then(|auth_value| auth_value.strip_prefix("Bearer ").map(|token| token.to_string()))
-                        .or_else(|| {
-                            request
-                                .headers()
-                                .get(header::SEC_WEBSOCKET_PROTOCOL)
-                                .and_then(|ws_header| ws_header.to_str().ok())
-                                .map(|ws_token_str| ws_token_str.to_string())
-                        })
-                        .and_then(|token| JWTToken::parse(&token).ok())
-                        .and_then(|jwt_token| jwt_token.decode().ok())
-                        .and_then(|payload| payload.subject_as_uuid().ok());
+                    let session = auth::extract_token_from_headers(request.headers())
+                        .and_then(|token| auth::decode_session_id(&token));
 
                     info_span!(
                         "Request",

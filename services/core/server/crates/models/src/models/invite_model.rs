@@ -1,5 +1,4 @@
 use chrono::{DateTime, Duration, Utc};
-use crypto::InviteToken;
 use diesel::prelude::*;
 use errors::ServerResult;
 use uuid::Uuid;
@@ -37,10 +36,10 @@ pub struct InviteModel {
 }
 
 impl InviteModel {
-    pub fn new(created_by: Uuid, lifetime: Duration) -> ServerResult<Self> {
+    pub fn new(created_by: Uuid, token: String, lifetime: Duration) -> ServerResult<Self> {
         let new_invite = NewInviteModel {
             created_by,
-            token: InviteToken::create().consume(),
+            token,
             expires_at: Utc::now() + lifetime,
         };
 

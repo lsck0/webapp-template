@@ -15,6 +15,7 @@ use utoipa::ToSchema;
     EnumIter,
     EnumString,
     Eq,
+    Hash,
     PartialEq,
     PgText,
     Serialize,
@@ -25,6 +26,16 @@ use utoipa::ToSchema;
 #[ts(export)]
 pub enum Permissions {
     CanInvite,
+    CanCreatePost,
+    CanEditOwnPost,
+    CanEditAnyPost,
+    CanDeleteOwnPost,
+    CanDeleteAnyPost,
+    CanViewUsers,
+    CanEditUsers,
+    CanDeleteUsers,
+    CanManageRoles,
+    CanManageSessions,
 }
 
 impl Permissions {

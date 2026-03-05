@@ -1,0 +1,46 @@
+### Send analytics events
+
+POST https://127.0.0.1/api/analytics HTTP/1.1
+Content-Type: application/json
+
+{
+  "events": [
+    {
+      "name": "page_view",
+      "properties": {
+        "page": "/home"
+      }
+    },
+    {
+      "name": "page_load",
+      "properties": {
+        "page": "/home",
+        "duration_ms": "142"
+      }
+    },
+    {
+      "name": "click",
+      "properties": {
+        "component": "navbar",
+        "action": "login_button"
+      }
+    }
+  ]
+}
+
+### Send a single event
+
+POST https://127.0.0.1/api/analytics HTTP/1.1
+Content-Type: application/json
+
+{
+  "events": [
+    {
+      "name": "error",
+      "properties": {
+        "page": "/dashboard",
+        "message": "failed to load data"
+      }
+    }
+  ]
+}

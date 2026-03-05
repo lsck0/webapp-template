@@ -12,6 +12,8 @@ pub mod ui;
 
 use axum::{Router, routing::get};
 use axum_prometheus::PrometheusMetricLayer;
+use once_cell::sync::Lazy;
+use config::ServerConfig;
 use middlewares::{add_tracing_layer, initialize_tracing};
 use models::{DbInitFlags, initialize_database};
 use openssl_probe::try_init_openssl_env_vars;
@@ -38,6 +40,8 @@ impl Modify for SecurityAddon {
     }
 }
 
+static PROMETHEUS_PAIR: Lazy<(PrometheusMetricLayer, axum_prometheus::Handle)> = Lazy::new(|| PrometheusMetricLayer::pair());
+
 pub async fn app(flags: DbInitFlags) -> Router {
     unsafe {
         if !try_init_openssl_env_vars() {
@@ -47,9 +51,35 @@ pub async fn app(flags: DbInitFlags) -> Router {
 
     initialize_tracing();
     initialize_database(flags);
+    auth::initialize_auth();
     initialize_cron_tasks().await;
 
-    let (prometheus_layer, metric_handle) = PrometheusMetricLayer::pair();
+    let config = ServerConfig::get();
+
+    let (prometheus_layer, metric_handle) = {
+        let pair = &*PROMETHEUS_PAIR;
+        (pair.0.clone(), pair.1.clone())
+    };
+
+    let cors = if config.dev {
+        CorsLayer::new()
+            .allow_origin(Any)
+            .allow_methods(Any)
+            .allow_headers([
+                http::header::AUTHORIZATION,
+                http::header::CONTENT_TYPE,
+                http::header::ORIGIN,
+            ])
+    } else {
+        CorsLayer::new()
+            .allow_methods(Any)
+            .allow_headers([
+                http::header::AUTHORIZATION,
+                http::header::CONTENT_TYPE,
+                http::header::ORIGIN,
+            ])
+            .allow_credentials(true)
+    };
 
     // /api/ -> API router
     // /api/ui -> Alternative UI router, either to replace react or development testing
@@ -61,11 +91,7 @@ pub async fn app(flags: DbInitFlags) -> Router {
         .merge(utoipa_swagger_ui::SwaggerUi::new("/api/docs").url("/api/docs/openapi.json", ApiDoc::openapi()))
         .route("/api/metrics", get(|| async move { metric_handle.render() }))
         .layer(prometheus_layer)
-        .layer(CorsLayer::new().allow_origin(Any).allow_methods(Any).allow_headers([
-            http::header::AUTHORIZATION,
-            http::header::CONTENT_TYPE,
-            http::header::ORIGIN,
-        ]));
+        .layer(cors);
 
     app = add_tracing_layer(app);
 

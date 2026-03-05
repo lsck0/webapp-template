@@ -1,0 +1,90 @@
+services:
+  # --------------------------------------------------------------------------
+  # CORE
+  # --------------------------------------------------------------------------
+
+  ai:
+    container_name: wat-test-ai
+    build:
+      context: ../services/core/ai
+      dockerfile: .docker/test.Dockerfile
+    env_file:
+      - ./env/dev.env
+    depends_on:
+      ollama:
+        condition: service_healthy
+
+  client:
+    container_name: wat-test-client
+    build:
+      context: ../services/core/client
+      dockerfile: .docker/test.Dockerfile
+    env_file:
+      - ./env/dev.env
+
+  ollama:
+    container_name: wat-test-ollama
+    build:
+      context: ../services/core/ollama
+      dockerfile: Dockerfile
+    volumes:
+      - test_ollama_data:/root/.ollama
+    tty: true
+
+  server:
+    container_name: wat-test-server
+    build:
+      context: ../services/core/server
+      dockerfile: .docker/test.Dockerfile
+    env_file:
+      - ./env/dev.env
+    depends_on:
+      minio:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # --------------------------------------------------------------------------
+  # STORAGE
+  # --------------------------------------------------------------------------
+
+  minio:
+    container_name: wat-test-minio
+    build:
+      context: ../services/storage/minio
+      dockerfile: Dockerfile
+    volumes:
+      - test_minio_data:/data
+    env_file:
+      - ./env/dev.env
+
+  postgres:
+    container_name: wat-test-postgres
+    build:
+      context: ../services/storage/postgres
+      dockerfile: Dockerfile
+    volumes:
+      - test_postgres_data:/var/lib/postgresql/data
+    env_file:
+      - ./env/dev.env
+    depends_on:
+      minio:
+        condition: service_healthy
+
+  redis:
+    container_name: wat-test-redis
+    build:
+      context: ../services/storage/redis
+      dockerfile: Dockerfile
+    volumes:
+      - test_redis_data:/data
+    env_file:
+      - ./env/dev.env
+
+volumes:
+  test_minio_data: {}
+  test_ollama_data: {}
+  test_postgres_data: {}
+  test_redis_data: {}

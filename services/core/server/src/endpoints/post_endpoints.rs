@@ -1,6 +1,6 @@
 use axum::{Json, Router, extract::Query, middleware, response::IntoResponse, routing::get};
 use errors::{ServerError, ServerResult, UserError, Validate, bail};
-use models::models::post_model::PostModel;
+use models::models::{permissions::Permissions, post_model::PostModel};
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 use utoipa::ToSchema;
@@ -11,7 +11,7 @@ use crate::{
     dtos::{
         DTO, Model, ModelVectorExt,
         post_dto::{NewPostDTO, PostDTO},
-        session_dto::SessionDTO,
+        user_dto::UserDTO,
     },
     middlewares::authentication_middleware::authentication_middleware,
 };
@@ -202,7 +202,7 @@ pub enum DeletePostRequest {
 )]
 async fn delete_post_handler(
     parameters: Query<DeletePostRequest>,
-    _session: SessionDTO,
+    user: UserDTO,
 ) -> ServerResult<impl IntoResponse> {
     match parameters.0 {
         DeletePostRequest::Default { id } => {
@@ -210,10 +210,9 @@ async fn delete_post_handler(
                 bail!(ServerError::NonExistentId(id.to_string()));
             };
 
-            // ensure!(
-            //     post.author == session.user.id || session.user.permissions >= Permissions::Staff,
-            //     ServerError::Unauthorized
-            // );
+            if post.author != user.id {
+                auth::require_permission(user.id, Permissions::CanDeleteAnyPost)?;
+            }
 
             post.delete()?;
 

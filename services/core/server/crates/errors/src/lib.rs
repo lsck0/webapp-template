@@ -126,6 +126,10 @@ pub enum UserError {
     PasswordTooWeak(String),
     EmailNotVerified,
     InviteRequired,
+    OtpAlreadyEnabled,
+    OtpNotEnabled,
+    OtpRequired,
+    InvalidOtp,
     Generic(String),
 }
 
@@ -196,7 +200,7 @@ impl IntoResponse for ServerError {
 
             JsonRejection(_) => (StatusCode::UNPROCESSABLE_ENTITY, self.to_string()).into_response(),
             QueryRejection(_) => (StatusCode::UNPROCESSABLE_ENTITY, self.to_string()).into_response(),
-            DieselError(_) => (StatusCode::INTERNAL_SERVER_ERROR, self.to_string()).into_response(),
+            DieselError(_) => (StatusCode::INTERNAL_SERVER_ERROR, String::from("Internal server error")).into_response(),
             TokenError(_) => (StatusCode::UNAUTHORIZED, self.to_string()).into_response(),
             HashingError => (StatusCode::INTERNAL_SERVER_ERROR, self.to_string()).into_response(),
             UuidError(_) => (StatusCode::UNPROCESSABLE_ENTITY, self.to_string()).into_response(),

@@ -1,12 +1,8 @@
 * TODO
 
-- [ ] server auth/crypto rework
-- [ ] server job system / deferred returns
-- [ ] server testing framework
-- [ ] client api/auth implementation
-- [ ] analytics endpoint -> client crashes on grafana dashboard
 - [ ] prod, testing and bench docker configurations
-- [ ] security checks against the running system?
+- [ ] client review
+- [ ] client api/auth implementation
 - [ ] offsite minio backup to S3
 - [ ] test database backups
 - [ ] protect monitoring endpoints (firewall, ip whitelist, not just auth of the dashboards)

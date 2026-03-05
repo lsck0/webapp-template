@@ -3,4 +3,25 @@ name = "auth"
 version = "0.0.0"
 edition = "2024"
 
+[dependencies]
+aliri_braid.workspace = true
+argon2.workspace = true
+base64.workspace = true
+chrono.workspace = true
+config.workspace = true
+errors.workspace = true
+http.workspace = true
+ipnetwork.workspace = true
+jsonwebtoken.workspace = true
+models.workspace = true
+rand.workspace = true
+serde.workspace = true
+totp-rs.workspace = true
+ts-rs.workspace = true
+utoipa.workspace = true
+uuid.workspace = true
+
 [dev-dependencies]
+pretty_assertions.workspace = true
+proptest.workspace = true
+rstest.workspace = true

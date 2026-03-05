@@ -26,7 +26,6 @@ pub struct ServerConfig {
 
     pub otel_exporter_otlp_endpoint: String,
 
-    pub jwt_secret: String,
     /// in minutes
     pub jwt_access_token_lifetime: u64,
     /// in days

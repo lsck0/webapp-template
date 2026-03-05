@@ -1,3 +1,4 @@
+pub mod analytics_endpoints;
 pub mod auth_endpoints;
 pub mod health_endpoints;
 pub mod post_endpoints;
@@ -10,14 +11,10 @@ use errors::ServerError;
 use ts_rs::TS;
 
 use crate::endpoints::{
+    analytics_endpoints::ANALYTICS_ENDPOINT,
     auth_endpoints::{
-        invite_endpoint::INVITE_ENDPOINT,
-        login_endpoint::LOGIN_ENDPOINT,
-        logout_endpoint::LOGOUT_ENDPOINT,
-        otp_endpoints::{OTP_BACKUP_CODES_ENDPOINT, OTP_DISABLE_ENDPOINT, OTP_ENABLE_ENDPOINT, OTP_VALIDATE_ENDPOINT},
-        password_change_endpoint::PASSWORD_CHANGE_ENDPOINT,
-        refresh_endpoint::REFRESH_ENDPOINT,
-        register_endpoint::REGISTER_ENDPOINT,
+        INVITE_ENDPOINT, LOGIN_ENDPOINT, LOGOUT_ENDPOINT, OTP_BACKUP_CODES_ENDPOINT, OTP_DISABLE_ENDPOINT,
+        OTP_ENABLE_ENDPOINT, OTP_VALIDATE_ENDPOINT, PASSWORD_CHANGE_ENDPOINT, REFRESH_ENDPOINT, REGISTER_ENDPOINT,
     },
     health_endpoints::HEALTH_ENDPOINT,
     post_endpoints::POST_ENDPOINT,
@@ -36,6 +33,9 @@ pub enum Endpoints {
 
     #[ts(rename = WEBSOCKET_ENDPOINT)]
     WS,
+
+    #[ts(rename = ANALYTICS_ENDPOINT)]
+    ANALYTICS,
 
     #[ts(rename = INVITE_ENDPOINT)]
     INVITE,
@@ -76,6 +76,7 @@ pub fn endpoint_router() -> Router {
     return Router::new().nest(
         "/api",
         Router::new()
+            .merge(analytics_endpoints::analytics_router())
             .merge(auth_endpoints::auth_router())
             .merge(health_endpoints::health_router())
             .merge(post_endpoints::post_router())

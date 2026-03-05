@@ -1,12 +1,15 @@
+use std::collections::HashSet;
+
 use chrono::{DateTime, Utc};
 use diesel::prelude::*;
 use errors::ServerResult;
+use rand::RngExt;
 use uuid::Uuid;
 
 use crate::{
     init::get_db,
     permissions::Permissions,
-    role_model::NewUserRoleModel,
+    role_model::{NewUserRoleModel, RoleModel},
     schema::{self, users},
 };
 
@@ -15,6 +18,7 @@ use crate::{
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct NewUserModel {
     pub name: String,
+    pub name_id: i16,
     pub password_hash: String,
 }
 
@@ -25,6 +29,7 @@ pub struct UserModel {
     pub id: Uuid,
 
     pub name: String,
+    pub name_id: i16,
 
     pub password_hash: String,
 
@@ -50,6 +55,36 @@ impl UserModel {
         return Ok(user);
     }
 
+    /// Assign a random available name_id for the given name.
+    pub fn assign_name_id(name: &str) -> ServerResult<i16> {
+        let taken: Vec<i16> = users::table
+            .filter(users::name.eq(name))
+            .select(users::name_id)
+            .load(&mut get_db()?)?;
+
+        let taken_set: HashSet<i16> = taken.into_iter().collect();
+
+        // Try random first for speed
+        let mut rng = rand::rng();
+        for _ in 0..50 {
+            let candidate = rng.random_range(0..10000);
+            if !taken_set.contains(&candidate) {
+                return Ok(candidate);
+            }
+        }
+
+        // Fallback to sequential scan
+        for candidate in 0..10000 {
+            if !taken_set.contains(&candidate) {
+                return Ok(candidate);
+            }
+        }
+
+        return Err(errors::ServerError::Internal(
+            "No available name ID for this name".into(),
+        ));
+    }
+
     pub fn get_all() -> ServerResult<Vec<Self>> {
         let users = users::table.load::<UserModel>(&mut get_db()?)?;
 
@@ -69,6 +104,20 @@ impl UserModel {
             .optional()?;
 
         return Ok(user);
+    }
+
+    pub fn find_by_tag(name: &str, name_id: i16) -> ServerResult<Option<Self>> {
+        let user = users::table
+            .filter(users::name.eq(name).and(users::name_id.eq(name_id)))
+            .first::<UserModel>(&mut get_db()?)
+            .optional()?;
+
+        return Ok(user);
+    }
+
+    /// Format the user tag as `name#0000`.
+    pub fn tag(&self) -> String {
+        return format!("{}#{:04}", self.name, self.name_id);
     }
 
     pub fn persist(self) -> ServerResult<Self> {
@@ -96,5 +145,54 @@ impl UserModel {
         diesel::delete(users::table.find(id)).execute(&mut get_db()?)?;
 
         return Ok(());
+    }
+
+    /// Get all roles assigned to this user, ordered by priority (highest first).
+    pub fn get_roles(&self) -> ServerResult<Vec<RoleModel>> {
+        let roles = schema::user_roles::table
+            .inner_join(schema::roles::table.on(schema::roles::id.eq(schema::user_roles::role_id)))
+            .filter(schema::user_roles::user_id.eq(self.id))
+            .select(RoleModel::as_select())
+            .order(schema::roles::priority.desc())
+            .load::<RoleModel>(&mut get_db()?)?;
+
+        return Ok(roles);
+    }
+
+    /// Resolve the effective permissions for this user.
+    ///
+    /// Resolution order (highest priority first):
+    /// 1. User-level forbidden permissions (always denied)
+    /// 2. User-level granted permissions (always granted, unless forbidden)
+    /// 3. Role permissions, processed by priority (highest first):
+    ///    - Role forbidden permissions remove from the set
+    ///    - Role granted permissions add to the set
+    pub fn resolve_permissions(&self) -> ServerResult<HashSet<Permissions>> {
+        let mut effective: HashSet<Permissions> = HashSet::new();
+
+        // Start with role permissions (lowest priority first, so higher overrides)
+        let mut roles = self.get_roles()?;
+        roles.reverse(); // process lowest priority first
+
+        for role in &roles {
+            for perm in role.permissions.iter().flatten() {
+                effective.insert(*perm);
+            }
+            for perm in role.permissions_forbidden.iter().flatten() {
+                effective.remove(perm);
+            }
+        }
+
+        // User-level grants override roles
+        for perm in self.permissions.iter().flatten() {
+            effective.insert(*perm);
+        }
+
+        // User-level forbidden always wins
+        for perm in self.permissions_forbidden.iter().flatten() {
+            effective.remove(perm);
+        }
+
+        return Ok(effective);
     }
 }

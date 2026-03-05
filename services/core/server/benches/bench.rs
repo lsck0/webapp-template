@@ -1,5 +1,5 @@
 use criterion::{Criterion, criterion_group, criterion_main};
-use crypto::HashedPassword;
+use auth::HashedPassword;
 use models::{
     DbInitFlags, initialize_database,
     user_model::{NewUserModel, UserModel},
@@ -10,8 +10,10 @@ fn sample_benchmark(c: &mut Criterion) {
 
     c.bench_function("Insert/Delete user", |b| {
         b.iter(|| {
+            let name_id = UserModel::assign_name_id("asdf").unwrap();
             let user = UserModel::new(NewUserModel {
                 name: String::from("asdf"),
+                name_id,
                 password_hash: String::from("asdf"),
             })
             .unwrap();
@@ -22,13 +24,13 @@ fn sample_benchmark(c: &mut Criterion) {
 
     c.bench_function("Hash password", |b| {
         b.iter(|| {
-            HashedPassword::new("asdf").unwrap();
+            HashedPassword::hash("asdf").unwrap();
         });
     });
 
     c.bench_function("Hash+Check password", |b| {
         b.iter(|| {
-            let pw = HashedPassword::new("asdf").unwrap();
+            let pw = HashedPassword::hash("asdf").unwrap();
 
             pw.check("asdf");
             pw.check("asdf2");

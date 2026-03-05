@@ -1,6 +1,16 @@
 // @generated automatically by Diesel CLI.
 
 diesel::table! {
+    encryption_keys (id) {
+        id -> Uuid,
+        key -> Text,
+        expires_at -> Timestamptz,
+        updated_at -> Timestamptz,
+        created_at -> Timestamptz,
+    }
+}
+
+diesel::table! {
     invites (id) {
         id -> Uuid,
         created_by -> Uuid,
@@ -101,6 +111,7 @@ diesel::table! {
     users (id) {
         id -> Uuid,
         name -> Text,
+        name_id -> Int2,
         password_hash -> Text,
         otp_enabled -> Bool,
         otp_validated -> Bool,
@@ -122,6 +133,7 @@ diesel::joinable!(user_roles -> roles (role_id));
 diesel::joinable!(user_roles -> users (user_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
+    encryption_keys,
     invites,
     login_attempts,
     login_restrictions,

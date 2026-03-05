@@ -1,6 +1,5 @@
 use axum::{Json, Router, extract::Query, middleware, response::IntoResponse, routing::get};
-use errors::{ServerError, ServerResult, UserError, bail};
-use models::models::session_model::{SessionInvalidationReason, SessionModel};
+use errors::{ServerResult, UserError};
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 use utoipa::ToSchema;
@@ -70,12 +69,12 @@ async fn get_session_handler(
     use GetSessionTag::*;
     match parameters.0 {
         GetSessionRequest::Default { tag: All } => {
-            let sessions = SessionModel::find_by_user(session.user.id)?.to_dtos()?;
+            let sessions = auth::get_all_sessions(session.user.id)?.to_dtos()?;
 
             return Ok(Json(sessions));
         }
         GetSessionRequest::Default { tag: Valid } => {
-            let sessions = SessionModel::find_valid_by_user(session.user.id)?.to_dtos()?;
+            let sessions = auth::get_valid_sessions(session.user.id)?.to_dtos()?;
 
             return Ok(Json(sessions));
         }
@@ -119,27 +118,16 @@ async fn close_session_handler(
     session: SessionDTO,
     Json(parameters): Json<CloseSessionRequest>,
 ) -> ServerResult<impl IntoResponse> {
-    use CloseSessionRequest::*;
     match parameters {
-        All {} => {
-            SessionModel::close_all_for_user(session.user.id, SessionInvalidationReason::UserClosed)?;
-
-            return Ok(());
+        CloseSessionRequest::All {} => {
+            auth::close_all_sessions(session.user.id)?;
         }
-        Id { id } => {
-            let Some(session_to_close) = SessionModel::find_by_id(Uuid::parse_str(&id)?)? else {
-                bail!(ServerError::NonExistentId(id));
-            };
-
-            if session_to_close.user_id != session.user.id {
-                bail!(ServerError::Unauthorized);
-            }
-
-            session_to_close.close(SessionInvalidationReason::UserClosed)?;
-
-            return Ok(());
+        CloseSessionRequest::Id { id } => {
+            auth::close_session(session.user.id, Uuid::parse_str(&id)?)?;
         }
     }
+
+    return Ok(());
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, TS, ToSchema)]
@@ -178,25 +166,14 @@ async fn delete_session_handler(
     parameters: Query<DeleteSessionRequest>,
     session: SessionDTO,
 ) -> ServerResult<impl IntoResponse> {
-    use DeleteSessionRequest::*;
     match parameters.0 {
-        All {} => {
-            SessionModel::delete_all_for_user(session.user.id)?;
-
-            return Ok(());
+        DeleteSessionRequest::All {} => {
+            auth::delete_all_sessions(session.user.id)?;
         }
-        Id { id } => {
-            let Some(session_to_delete) = SessionModel::find_by_id(Uuid::parse_str(&id)?)? else {
-                bail!(ServerError::NonExistentId(id));
-            };
-
-            if session_to_delete.user_id != session.user.id {
-                bail!(ServerError::Unauthorized);
-            }
-
-            session_to_delete.delete()?;
-
-            return Ok(());
+        DeleteSessionRequest::Id { id } => {
+            auth::delete_session(session.user.id, Uuid::parse_str(&id)?)?;
         }
     }
+
+    return Ok(());
 }

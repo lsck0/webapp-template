@@ -2,6 +2,7 @@
 
 use std::{net::SocketAddr, str::FromStr};
 
+use auth::{RefreshRequest, RegisterRequest};
 use axum_test::TestServer;
 use config::ServerConfig;
 use http::{HeaderName, HeaderValue};
@@ -9,19 +10,26 @@ use models::{DbInitFlags, models::session_model::SessionModel};
 use pretty_assertions::assert_eq;
 use server::{
     dtos::session_dto::SessionDTO,
-    endpoints::auth_endpoints::{
-        login_endpoint::{LOGIN_ENDPOINT, LoginInfo},
-        refresh_endpoint::{REFRESH_ENDPOINT, SessionRefreshInfo},
-    },
+    endpoints::auth_endpoints::{LOGIN_ENDPOINT, LoginInfo, REFRESH_ENDPOINT, REGISTER_ENDPOINT},
 };
 
+#[allow(unused)]
 pub mod macros;
 #[allow(unused)]
 pub use macros::*;
 
+#[macro_use]
+#[allow(unused)]
+pub mod case;
+#[allow(unused)]
+pub mod fuzz;
+
 /// Creates a test server.
 #[allow(unused)]
 pub async fn create_test_server(flags: DbInitFlags) -> TestServer {
+    auth::keyring::KeyRing::close();
+    models::close_db();
+
     TestServer::new(
         server::app(flags)
             .await
@@ -75,7 +83,7 @@ pub async fn refresh_client_session(server: &mut TestServer, session: SessionDTO
     // refresh the session
     let refresh_response = server
         .post(REFRESH_ENDPOINT)
-        .json(&SessionRefreshInfo {
+        .json(&RefreshRequest {
             session_id: session.id,
             session_token: session.session_token.clone(),
         })
@@ -99,4 +107,22 @@ pub async fn refresh_client_session(server: &mut TestServer, session: SessionDTO
     *server = new_server;
 
     return new_session;
+}
+
+/// Registers a new user via invite. Requires an already-authenticated admin client to create the invite.
+#[allow(unused)]
+pub async fn register_user(admin_client: &TestServer, server: &TestServer, name: &str, password: &str) {
+    let response = admin_client.get(server::endpoints::auth_endpoints::INVITE_ENDPOINT).await;
+    assert_eq!(response.status_code(), 200);
+    let invite = response.text();
+
+    let response = server
+        .post(REGISTER_ENDPOINT)
+        .json(&RegisterRequest {
+            name: name.to_string(),
+            password: password.to_string(),
+            invite,
+        })
+        .await;
+    assert_eq!(response.status_code(), 200);
 }

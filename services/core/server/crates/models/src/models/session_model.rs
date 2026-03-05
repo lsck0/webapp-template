@@ -36,6 +36,7 @@ pub enum SessionInvalidationReason {
     Abandoned,
     AccessTokenLeak,
     Expired,
+    PasswordChanged,
     SessionTokenLeak,
     UserClosed,
     UserLogout,

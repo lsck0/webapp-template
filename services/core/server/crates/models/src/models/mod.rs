@@ -1,3 +1,4 @@
+pub mod encryption_key_model;
 pub mod invite_model;
 pub mod login_attempt_model;
 pub mod login_restriction_model;

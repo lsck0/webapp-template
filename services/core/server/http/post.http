@@ -1,0 +1,43 @@
+### Get all posts (requires auth)
+
+GET https://127.0.0.1/api/post HTTP/1.1
+Authorization: Bearer <access_token>
+
+### Get post by ID (requires auth)
+
+GET https://127.0.0.1/api/post?id=<post_id> HTTP/1.1
+Authorization: Bearer <access_token>
+
+### Create a post (requires auth)
+
+POST https://127.0.0.1/api/post HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer <access_token>
+
+{
+  "title": "Hello World",
+  "content": "This is a test post.",
+  "author": "<user_id>"
+}
+
+### Update a post (requires auth)
+
+PUT https://127.0.0.1/api/post HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer <access_token>
+
+{
+  "id": "<post_id>",
+  "title": "Updated Title",
+  "content": "Updated content.",
+  "author": {
+    "id": "<user_id>",
+    "name": "<user_name>",
+    "name_id": 1
+  }
+}
+
+### Delete a post (requires auth)
+
+DELETE https://127.0.0.1/api/post?id=<post_id> HTTP/1.1
+Authorization: Bearer <access_token>

@@ -1,3 +1,4 @@
+use auth::RegisterRequest;
 use config::ServerConfig;
 use http::{Method, StatusCode};
 use models::{DbInitFlags, models::user_model::UserModel};
@@ -7,11 +8,8 @@ use server::{
     dtos::session_dto::SessionDTO,
     endpoints::{
         auth_endpoints::{
-            invite_endpoint::INVITE_ENDPOINT,
-            login_endpoint::{LOGIN_ENDPOINT, LoginInfo},
-            logout_endpoint::LOGOUT_ENDPOINT,
-            password_change_endpoint::{PASSWORD_CHANGE_ENDPOINT, PasswordChangeInfo},
-            register_endpoint::{REGISTER_ENDPOINT, RegisterInfo},
+            INVITE_ENDPOINT, LOGIN_ENDPOINT, LOGOUT_ENDPOINT, LoginInfo, PASSWORD_CHANGE_ENDPOINT,
+            PasswordChangeInfo, REGISTER_ENDPOINT,
         },
         session_endpoints::{GetSessionRequest, GetSessionTag, SESSION_ENDPOINT},
     },
@@ -63,7 +61,7 @@ async fn auth_flow() {
     // register without an invite should fail
     let response = server
         .post(REGISTER_ENDPOINT)
-        .json(&RegisterInfo {
+        .json(&RegisterRequest {
             name: String::from("auth_flow"),
             password: String::from("auth_flow"),
             invite: String::from("auth_flow"),
@@ -82,7 +80,7 @@ async fn auth_flow() {
     let password = "auth_flow";
     let response = server
         .post(REGISTER_ENDPOINT)
-        .json(&RegisterInfo {
+        .json(&RegisterRequest {
             name: username.to_string(),
             password: password.to_string(),
             invite: invite.clone(),
@@ -106,7 +104,7 @@ async fn auth_flow() {
     // using the invite twice should fail
     let response = server
         .post(REGISTER_ENDPOINT)
-        .json(&RegisterInfo {
+        .json(&RegisterRequest {
             name: "auth_flow2".to_string(),
             password: "auth_flow2".to_string(),
             invite: invite.clone(),

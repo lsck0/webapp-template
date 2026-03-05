@@ -10,6 +10,9 @@ check:
     cargo kani --workspace
     cd ./fuzz/ && ./run.sh
 
+coverage:
+    cargo tarpaulin --workspace --out html --output-dir target/tarpaulin --skip-clean
+
 server-docs:
     cargo doc --lib --open --document-private-items
 

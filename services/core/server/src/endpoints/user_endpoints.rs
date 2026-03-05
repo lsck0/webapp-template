@@ -4,7 +4,10 @@ use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 use utoipa::ToSchema;
 
-use crate::{dtos::user_dto::UserDTO, middlewares::authentication_middleware::authentication_middleware};
+use crate::{
+    dtos::{DTO, user_dto::UserDTO},
+    middlewares::authentication_middleware::authentication_middleware,
+};
 
 pub const USER_ENDPOINT: &str = "/api/user";
 
@@ -56,51 +59,41 @@ async fn get_user_handler(parameters: Query<GetUserRequest>, user: UserDTO) -> S
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, TS, ToSchema)]
-#[serde(untagged)]
 #[ts(export)]
-pub enum UpdateUserRequest {
-    Default,
+pub struct UpdateUserRequest {
+    pub name: String,
 }
 
-/// Update User Request.
+/// Update the current user.
 ///
 /// Auth: Required
 /// Permissions: None
-///
-/// ## Request Body:
-///
-/// Not Implemented.
 #[utoipa::path(
     put,
     path = USER_ENDPOINT,
     security(("token" = [])),
     request_body = UpdateUserRequest,
     responses(
-        (status = 200, description = "Ok.", body = Vec<UserDTO>),
+        (status = 200, description = "Ok.", body = UserDTO),
         (status = 401, description = "Unauthenticated."),
         (status = 403, description = "Unauthorized."),
         (status = 422, description = "User Error.", body = UserError),
     ),
 )]
-async fn update_user_handler(Json(_parameters): Json<UpdateUserRequest>) -> ServerResult<impl IntoResponse> {
-    return Ok(Json("Not Implemented."));
+async fn update_user_handler(
+    user: UserDTO,
+    Json(request): Json<UpdateUserRequest>,
+) -> ServerResult<impl IntoResponse> {
+    let updated = auth::update_user(user.id, request.name)?;
+    let dto = UserDTO::from_model(updated)?;
+
+    return Ok(Json(dto));
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, TS, ToSchema)]
-#[serde(untagged)]
-#[ts(export)]
-pub enum DeleteUserRequest {
-    Default {},
-}
-
-/// Delete User Request.
+/// Delete the current user and all their sessions.
 ///
 /// Auth: Required
 /// Permissions: None
-///
-/// ## Query Parameters:
-///
-/// Not Implemented.
 #[utoipa::path(
     delete,
     path = USER_ENDPOINT,
@@ -112,6 +105,8 @@ pub enum DeleteUserRequest {
         (status = 422, description = "User Error.", body = UserError),
     ),
 )]
-async fn delete_user_handler(_parameters: Query<DeleteUserRequest>) -> ServerResult<impl IntoResponse> {
-    return Ok(Json("Not Implemented."));
+async fn delete_user_handler(user: UserDTO) -> ServerResult<impl IntoResponse> {
+    auth::delete_user(user.id)?;
+
+    return Ok(());
 }
