@@ -4,7 +4,7 @@ use axum::{
     Router,
     extract::{
         WebSocketUpgrade,
-        ws::{Message, WebSocket},
+        ws::Message,
     },
     middleware,
     response::IntoResponse,
@@ -13,7 +13,7 @@ use axum::{
 use errors::UserError;
 use serde::{Deserialize, Serialize};
 use strum::Display;
-use tokio::sync::Mutex;
+use tokio::sync::{Mutex, mpsc};
 use ts_rs::TS;
 use utoipa::ToSchema;
 use uuid::Uuid;
@@ -47,14 +47,43 @@ pub fn ws_router() -> Router {
     )
 )]
 async fn ws_handler(ws: WebSocketUpgrade, session: SessionDTO) -> impl IntoResponse {
-    return ws.on_upgrade(async move |ws_client| {
+    return ws.on_upgrade(async move |mut ws_client| {
+        let id = session.id;
+        let (tx, mut rx) = mpsc::channel::<String>(32);
+
+        {
+            let mut clients = CLIENTS.lock().await;
+            clients.push((id, tx));
+        }
+
+        loop {
+            tokio::select! {
+                msg = rx.recv() => {
+                    match msg {
+                        Some(text) => {
+                            if ws_client.send(Message::Text(text.into())).await.is_err() {
+                                break;
+                            }
+                        }
+                        None => break,
+                    }
+                }
+                msg = ws_client.recv() => {
+                    match msg {
+                        Some(Ok(Message::Close(_))) | None | Some(Err(_)) => break,
+                        _ => {}
+                    }
+                }
+            }
+        }
+
         let mut clients = CLIENTS.lock().await;
-        clients.push((session.id, ws_client));
+        clients.retain(|(client_id, _)| *client_id != id);
     });
 }
 
-#[allow(clippy::type_complexity)]
-static CLIENTS: LazyLock<Arc<Mutex<Vec<(Uuid, WebSocket)>>>> = LazyLock::new(|| Arc::new(Mutex::new(vec![])));
+static CLIENTS: LazyLock<Arc<Mutex<Vec<(Uuid, mpsc::Sender<String>)>>>> =
+    LazyLock::new(|| Arc::new(Mutex::new(vec![])));
 
 /// WebSocket Notifications.
 #[derive(Debug, Clone, Serialize, Deserialize, Display, TS, ToSchema)]
@@ -71,18 +100,13 @@ impl WsNotification {
         let mut clients = CLIENTS.lock().await;
         let mut remove_list = vec![];
 
-        for (client_idx, (_, client)) in clients.iter_mut().enumerate() {
-            // this happens per client, so we have to clone here
-            let local_message = message.clone();
-            let result = client.send(Message::Text(local_message.into())).await;
-
-            // if the message could not be sent, add the client to the remove list
-            if result.is_err() {
+        for (client_idx, (_, tx)) in clients.iter().enumerate() {
+            if tx.send(message.clone()).await.is_err() {
                 remove_list.push(client_idx);
             }
         }
 
-        // remove disconnected/broken clients
+        // remove disconnected clients
         for client_idx in remove_list.into_iter().rev() {
             clients.remove(client_idx);
         }

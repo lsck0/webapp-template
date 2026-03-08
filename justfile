@@ -3,28 +3,32 @@ default:
 
 # Run the project in development mode
 dev:
-    @GIT_COMMIT=$(git rev-parse HEAD) COMPOSE_BAKE=true docker compose \
+    @GIT_COMMIT=$(git rev-parse HEAD) LAST_UPDATED=$(git log -1 --format=%cI HEAD) COMPOSE_BAKE=true \
+        docker compose \
         --project-name wat \
         --file infrastructure/dev.compose.yml \
         up --build --force-recreate --remove-orphans --abort-on-container-exit --watch
 
 # Run the project in production mode
 prod:
-    @GIT_COMMIT=$(git rev-parse HEAD) COMPOSE_BAKE=true docker compose \
+    @GIT_COMMIT=$(git rev-parse HEAD) LAST_UPDATED=$(git log -1 --format=%cI HEAD) COMPOSE_BAKE=true \
+        docker compose \
         --project-name wat \
         --file infrastructure/prod.compose.yml \
         up --build --force-recreate --remove-orphans --abort-on-container-exit
 
 # Run the project in test mode
 test:
-    @GIT_COMMIT=$(git rev-parse HEAD) COMPOSE_BAKE=true docker compose \
+    @GIT_COMMIT=$(git rev-parse HEAD) LAST_UPDATED=$(git log -1 --format=%cI HEAD) COMPOSE_BAKE=true \
+        docker compose \
         --project-name wat \
         --file infrastructure/test.compose.yml \
         up --build --force-recreate --remove-orphans --abort-on-container-exit
 
 # Run the project in benchmark mode
 bench:
-    @GIT_COMMIT=$(git rev-parse HEAD) COMPOSE_BAKE=true docker compose \
+    @GIT_COMMIT=$(git rev-parse HEAD) LAST_UPDATED=$(git log -1 --format=%cI HEAD) COMPOSE_BAKE=true \
+        docker compose \
         --project-name wat \
         --file infrastructure/bench.compose.yml \
         up --build --force-recreate --remove-orphans --abort-on-container-exit

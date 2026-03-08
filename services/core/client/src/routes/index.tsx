@@ -13,6 +13,7 @@ export function IndexRouteComponent() {
             <title>Webapp Template</title>
             <p>Hello World</p>
             <p>Version: {import.meta.env.GIT_COMMIT}</p>
+            <p>Last updated: {import.meta.env.LAST_UPDATED}</p>
         </>
     );
 }

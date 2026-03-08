@@ -6,6 +6,10 @@ import tailwindcss from "@tailwindcss/vite";
 import path from "path";
 
 export default defineConfig({
+    define: {
+        "import.meta.env.GIT_COMMIT": JSON.stringify(process.env.GIT_COMMIT ?? ""),
+        "import.meta.env.LAST_UPDATED": JSON.stringify(process.env.LAST_UPDATED ?? ""),
+    },
     resolve: {
         alias: {
             "@": path.resolve(__dirname, "./src"),

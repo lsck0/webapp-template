@@ -16,6 +16,7 @@ static CONFIG: LazyLock<ServerConfig> = LazyLock::new(|| {
 pub struct ServerConfig {
     pub dev: bool,
     pub git_commit: String,
+    pub last_updated: String,
 
     pub database_pool_size: u32,
     pub database_url: String,
