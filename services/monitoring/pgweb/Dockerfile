@@ -1,7 +1,7 @@
 FROM sosedoff/pgweb:0.17.0
 
 USER root
-RUN apt-get update && apt-get install -y  wget
+RUN apt-get update && apt-get install -y wget
 USER pgweb
 
 ENV PGWEB_DATABASE_URL=postgres://root:1UdEQQTMBGCCWxvY2FsaG9zdIcEfwAAATAdBgNVHQ4EFgQUgGAHp2OojO06lrYu@postgres:5432/root?sslmode=disable

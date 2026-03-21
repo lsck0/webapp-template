@@ -3,7 +3,7 @@
 use std::collections::HashSet;
 
 use chrono::{Duration, Utc};
-use errors::{FieldError, FieldErrorReason, ServerError, ServerResult, bail, body_error};
+use errors::{FieldError, FieldErrorReason, ServerError, ServerResult, bail, body_error, user_error};
 use ipnetwork::IpNetwork;
 use models::models::{
     invite_model::InviteModel,
@@ -56,107 +56,107 @@ pub struct RefreshRequest {
 pub fn login(request: LoginRequest) -> ServerResult<SessionModel> {
     return crate::defense::constant_time(|| {
         let config = config::ServerConfig::get();
-    let mut errors = vec![];
+        let mut errors = vec![];
 
-    let Some(user) = parse_tag(&request.name)
-        .and_then(|(name, name_id)| UserModel::find_by_tag(name, name_id).ok())
-        .flatten()
-        .or_else(|| UserModel::find_by_name(&request.name).ok().flatten())
-    else {
-        push_invalid_login_errors(&mut errors);
-        bail!(body_error!(errors));
-    };
+        let Some(user) = parse_tag(&request.name)
+            .and_then(|(name, name_id)| UserModel::find_by_tag(name, name_id).ok())
+            .flatten()
+            .or_else(|| UserModel::find_by_name(&request.name).ok().flatten())
+        else {
+            push_invalid_login_errors(&mut errors);
+            bail!(body_error!(errors));
+        };
 
-    if let Some(restriction) = LoginRestrictionModel::find_by_user_id(user.id)?
-        && restriction.restricted_until > Utc::now()
-    {
-        push_invalid_login_errors(&mut errors);
-        bail!(body_error!(errors));
-    }
+        if let Some(restriction) = LoginRestrictionModel::find_by_user_id(user.id)?
+            && restriction.restricted_until > Utc::now()
+        {
+            push_invalid_login_errors(&mut errors);
+            bail!(body_error!(errors));
+        }
 
-    if !HashedPassword::parse(&user.password_hash)?.check(&request.password) {
-        register_failed_login_attempt(&user.id)?;
-        push_invalid_login_errors(&mut errors);
-        bail!(body_error!(errors));
-    }
+        if !HashedPassword::parse(&user.password_hash)?.check(&request.password) {
+            register_failed_login_attempt(&user.id)?;
+            push_invalid_login_errors(&mut errors);
+            bail!(body_error!(errors));
+        }
 
-    if user.otp_enabled && user.otp_validated {
-        verify_otp(&user, request.otp.as_deref())?;
-    }
+        if user.otp_enabled && user.otp_validated {
+            verify_otp(&user, request.otp.as_deref())?;
+        }
 
-    let open_sessions = SessionModel::find_valid_by_user(user.id)?.len();
+        let open_sessions = SessionModel::find_valid_by_user(user.id)?.len();
         if open_sessions >= config.max_open_sessions {
-        bail!(ServerError::UserError(errors::UserError::TooManyOpenSessions));
-    }
+            bail!(user_error!(TooManyOpenSessions));
+        }
 
-    let mut session = SessionModel::new(NewSessionModel {
-        user_id: user.id,
-        session_token: String::new(),
-        access_token: String::new(),
-        ip_address: request.ip_address,
-        user_agent: request.user_agent,
-    })?;
+        let mut session = SessionModel::new(NewSessionModel {
+            user_id: user.id,
+            session_token: String::new(),
+            access_token: String::new(),
+            ip_address: request.ip_address,
+            user_agent: request.user_agent,
+        })?;
 
-    session.session_token = JWTToken::new_session_token(&session.id).take();
-    session.access_token = JWTToken::new_access_token(&session.id).take();
-    let session = session.persist()?;
+        session.session_token = JWTToken::new_session_token(&session.id).take();
+        session.access_token = JWTToken::new_access_token(&session.id).take();
+        let session = session.persist()?;
 
-    LoginAttemptModel::delete_all_for_user(&user.id)?;
+        LoginAttemptModel::delete_all_for_user(&user.id)?;
 
-    return Ok(session);
+        return Ok(session);
     });
 }
 
 /// Register a new user.
 pub fn register(request: RegisterRequest) -> ServerResult<()> {
     return crate::defense::constant_time(|| {
-    let mut errors = vec![];
+        let mut errors = vec![];
 
-    if request.name.len() < 4 || request.name.len() > 32 {
-        errors.push(FieldError {
-            field: String::from("name"),
-            reason: FieldErrorReason::InvalidRange { min: 4, max: 32 },
-        });
-    }
+        if request.name.len() < 4 || request.name.len() > 32 {
+            errors.push(FieldError {
+                field: String::from("name"),
+                reason: FieldErrorReason::InvalidRange { min: 4, max: 32 },
+            });
+        }
 
-    if request.password.len() < 8 || request.password.len() > 32 {
-        errors.push(FieldError {
-            field: String::from("password"),
-            reason: FieldErrorReason::InvalidRange { min: 8, max: 32 },
-        });
-    }
+        if request.password.len() < 8 || request.password.len() > 32 {
+            errors.push(FieldError {
+                field: String::from("password"),
+                reason: FieldErrorReason::InvalidRange { min: 8, max: 32 },
+            });
+        }
 
-    if !errors.is_empty() {
-        bail!(body_error!(errors));
-    }
+        if !errors.is_empty() {
+            bail!(body_error!(errors));
+        }
 
-    let Some(invite) = InviteModel::find_by_token(&request.invite)? else {
-        errors.push(FieldError {
-            field: String::from("invite"),
-            reason: FieldErrorReason::InvalidInviteToken,
-        });
-        bail!(body_error!(errors));
-    };
+        let Some(invite) = InviteModel::find_by_token(&request.invite)? else {
+            errors.push(FieldError {
+                field: String::from("invite"),
+                reason: FieldErrorReason::InvalidInviteToken,
+            });
+            bail!(body_error!(errors));
+        };
 
-    if invite.used || invite.expires_at < Utc::now() {
-        errors.push(FieldError {
-            field: String::from("invite"),
-            reason: FieldErrorReason::ExpiredInviteToken,
-        });
-        bail!(body_error!(errors));
-    }
+        if invite.used || invite.expires_at < Utc::now() {
+            errors.push(FieldError {
+                field: String::from("invite"),
+                reason: FieldErrorReason::ExpiredInviteToken,
+            });
+            bail!(body_error!(errors));
+        }
 
-    let password_hash = HashedPassword::hash(&request.password)?.take();
-    let name_id = UserModel::assign_name_id(&request.name)?;
-    let user = UserModel::new(NewUserModel {
-        name: request.name,
-        name_id,
-        password_hash,
-    })?;
+        let password_hash = HashedPassword::hash(&request.password)?.take();
+        let name_id = UserModel::assign_name_id(&request.name)?;
+        let user = UserModel::new(NewUserModel {
+            name: request.name,
+            name_id,
+            password_hash,
+        })?;
 
-    invite.use_invite(user.id)?;
+        invite.use_invite(user.id)?;
 
-    return Ok(());
+        return Ok(());
     });
 }
 
@@ -213,36 +213,36 @@ pub fn create_invite(created_by: Uuid) -> ServerResult<String> {
 /// Change a user's password.
 pub fn change_password(request: PasswordChangeRequest) -> ServerResult<()> {
     return crate::defense::constant_time(|| {
-    let mut errors = vec![];
+        let mut errors = vec![];
 
-    let Some(mut user) = UserModel::find_by_id(request.session_user_id)? else {
-        bail!(ServerError::Unauthenticated);
-    };
+        let Some(mut user) = UserModel::find_by_id(request.session_user_id)? else {
+            bail!(ServerError::Unauthenticated);
+        };
 
-    if !HashedPassword::parse(&user.password_hash)?.check(&request.old_password) {
-        errors.push(FieldError {
-            field: String::from("old_password"),
-            reason: FieldErrorReason::InvalidCredentials,
-        });
-        bail!(body_error!(errors));
-    }
-
-    if user.otp_enabled && user.otp_validated {
-        verify_otp(&user, request.otp.as_deref())?;
-    }
-
-    user.password_hash = HashedPassword::hash(&request.new_password)?.take();
-    user.persist()?;
-
-    // Invalidate all other sessions — the user must re-authenticate on other devices
-    let sessions = SessionModel::find_valid_by_user(request.session_user_id)?;
-    for session in sessions {
-        if session.id != request.session_id {
-            session.close(SessionInvalidationReason::PasswordChanged)?;
+        if !HashedPassword::parse(&user.password_hash)?.check(&request.old_password) {
+            errors.push(FieldError {
+                field: String::from("old_password"),
+                reason: FieldErrorReason::InvalidCredentials,
+            });
+            bail!(body_error!(errors));
         }
-    }
 
-    return Ok(());
+        if user.otp_enabled && user.otp_validated {
+            verify_otp(&user, request.otp.as_deref())?;
+        }
+
+        user.password_hash = HashedPassword::hash(&request.new_password)?.take();
+        user.persist()?;
+
+        // Invalidate all other sessions — the user must re-authenticate on other devices
+        let sessions = SessionModel::find_valid_by_user(request.session_user_id)?;
+        for session in sessions {
+            if session.id != request.session_id {
+                session.close(SessionInvalidationReason::PasswordChanged)?;
+            }
+        }
+
+        return Ok(());
     });
 }
 
@@ -453,11 +453,7 @@ fn verify_otp(user: &UserModel, code: Option<&str>) -> ServerResult<()> {
         for stored in codes.iter().flatten() {
             // Constant-time comparison to prevent timing attacks
             if stored.len() == code.len()
-                && stored
-                    .bytes()
-                    .zip(code.bytes())
-                    .fold(0u8, |acc, (a, b)| acc | (a ^ b))
-                    == 0
+                && stored.bytes().zip(code.bytes()).fold(0u8, |acc, (a, b)| acc | (a ^ b)) == 0
             {
                 // Consume the recovery code
                 let mut user_mut = get_user(user.id)?;
@@ -681,6 +677,7 @@ mod tests {
 
     mod prop {
         use proptest::prelude::*;
+
         use super::super::parse_tag;
 
         proptest! {
